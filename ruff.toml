@@ -37,7 +37,6 @@ line-length = 79
 indent-width = 4
 
 [lint]
-pydocstyle-convention = "google"
 select = ["ALL"]
 ignore = [
     "PTH",
@@ -92,3 +91,6 @@ docstring-code-line-length = "dynamic"
 
 [lint.per-file-ignores]
 "tests/*.py" = ["S101", "PLR2004"]  # allow asserts and magical values
+
+[lint.pydocstyle]
+convention = "google"
