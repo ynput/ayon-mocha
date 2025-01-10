@@ -37,6 +37,7 @@ line-length = 79
 indent-width = 4
 
 [lint]
+pydocstyle-convention = "google"
 select = ["ALL"]
 ignore = [
     "PTH",
