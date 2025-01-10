@@ -1,6 +1,8 @@
 """Library functions for the Ayon Mocha API."""
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
+
 from mocha import ui
 from qtpy.QtWidgets import QApplication
 
@@ -16,6 +18,6 @@ def get_main_window() -> QtWidgets.QWidget:
     """
     return ui.get_widgets()["MainWindow"]
 
-def update_UI():
+def update_ui() -> None:
     """Update the UI."""
     QApplication.processEvents()

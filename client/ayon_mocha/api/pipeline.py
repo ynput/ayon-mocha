@@ -11,10 +11,9 @@ import pyblish.api
 from ayon_core.host import HostBase, ILoadHost, IPublishHost, IWorkfileHost
 from ayon_core.pipeline import get_current_context
 from ayon_core.tools.utils import host_tools
-from mocha import ui
 
-from .workio import current_file, file_extensions, open_file, save_file
 from .lib import get_main_window
+from .workio import current_file, file_extensions, open_file, save_file
 
 if TYPE_CHECKING:
     from qtpy import QtWidgets
@@ -132,12 +131,12 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
             return file_path.as_posix()
         return None
 
-    def get_containers(self):
-        pass
+    def get_containers(self) -> None:
+        """Get the containers."""
 
     def get_context_data(self) -> dict:
         """Get the context data."""
         return {}
 
-    def update_context_data(self, data, changes):
-        pass
+    def update_context_data(self, data: dict, changes: dict) -> None:
+        """Update the context data."""

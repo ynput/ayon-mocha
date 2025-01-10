@@ -2,17 +2,14 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 from shutil import copyfile
-from qtpy.QtCore import QCoreApplication
-import sys
+from typing import Optional
 
-import mocha
-from mocha.project import Project, get_current_project
-from mocha.project import Clip
+from mocha.project import Clip, Project, get_current_project
+
 from ayon_mocha import MOCHA_ADDON_ROOT
 
-from .lib import update_UI
+from .lib import update_ui
 
 
 def file_extensions() -> list[str]:
@@ -43,10 +40,8 @@ def save_file(filepath:Optional[Path]) -> None:
     project.save()
 
 def open_file(filepath:Optional[Path]) -> None:
-    """Open a workfile."""E
-    project = Project(filepath.as_posix())
-    print(f"Project: {project.get_project_file()}")
-    print(f"layers: {project.layers}")
+    """Open a workfile."""
+    Project(filepath.as_posix())
 
 def current_file() -> Optional[Path]:
     """Return the current workfile."""
@@ -61,7 +56,7 @@ def _create_empy_project(path: Path) -> Project:
     clip = Clip(clip_path.as_posix())
     project = Project(clip)
 
-    update_UI()
+    update_ui()
     return project
 
 def _copy_placeholder_clip(destination:Path) -> Path:
