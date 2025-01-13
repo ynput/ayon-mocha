@@ -24,7 +24,7 @@ mypy = "^1.14.1"
 pytest = "^8.0"
 pytest-print = "^1.0"
 # linting dependencies
-ruff = "^0.3.3"
+ruff = "*"
 pre-commit = "^4"
 codespell = "^2.2.6"
 mypy = "^1.14.0"

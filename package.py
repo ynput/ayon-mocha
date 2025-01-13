@@ -1,3 +1,4 @@
+"""Mocha Addon package for AYON."""
 # Required: lower case addon name e.g. 'deadline', otherwise addon
 #   will be invalid
 name = "mocha"
