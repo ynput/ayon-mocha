@@ -2,14 +2,9 @@
 from __future__ import annotations
 
 from pathlib import Path
-from shutil import copyfile
 from typing import Optional
 
 from mocha.project import Clip, Project, get_current_project
-
-from ayon_mocha import MOCHA_ADDON_ROOT
-
-from .lib import update_ui
 
 
 def file_extensions() -> list[str]:
@@ -33,7 +28,7 @@ def save_file(filepath:Optional[Path]) -> None:
     """
     project = get_current_project()
     if not project:
-        project = _create_empy_project(filepath)
+        project = _create_empy_project()
     if filepath:
         project.save_as(filepath.as_posix())
         return
@@ -50,20 +45,7 @@ def current_file() -> Optional[Path]:
         return None
     return Path(project.project_file)
 
-def _create_empy_project(path: Path) -> Project:
+def _create_empy_project() -> Project:
     """Create an empty project."""
-    clip_path = _copy_placeholder_clip(path.parent)
-    clip = Clip(clip_path.as_posix())
-    project = Project(clip)
-
-    update_ui()
-    return project
-
-def _copy_placeholder_clip(destination:Path) -> Path:
-    """Copy placeholder clip to the destination."""
-    clip_path = destination / "empty.exr"
-    copyfile(
-        Path(MOCHA_ADDON_ROOT) / "resources" / "empty.exr",
-        clip_path
-    )
-    return clip_path
+    clip = Clip("/foo/bar")
+    return Project(clip)
