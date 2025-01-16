@@ -1,4 +1,6 @@
 """Mocha Addon package for AYON."""
+from __future__ import annotations
+
 # Required: lower case addon name e.g. 'deadline', otherwise addon
 #   will be invalid
 name = "mocha"
@@ -25,4 +27,4 @@ ayon_required_addons = {
 }
 # Mapping of addon name to version requirements
 # - if addon is used in same bundle the version range must be valid
-ayon_compatible_addons = {}
+ayon_compatible_addons: dict[str, str] = {}
