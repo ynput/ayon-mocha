@@ -6,14 +6,17 @@ import pytest
 
 
 class Project:
+    """Mock Mocha Pro project."""
     notes: str = ""
 
 
-def get_current_project():
+def get_current_project() -> Project:
+    """Mock the get_current_project function."""
     return Project()
 
 @pytest.fixture
-def mock_mocha_project_api(monkeypatch):
+def mock_mocha_project_api(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Mock the Mocha Pro API."""
     """Mock the Mocha Pro API."""
     sys.modules["mocha.projects"] = MagicMock()
     monkeypatch.setattr(sys.modules,
@@ -21,7 +24,7 @@ def mock_mocha_project_api(monkeypatch):
     monkeypatch.setattr(sys.modules,
         "mocha.project.Project", Project)
 
-def test_get_ayon_data(mock_mocha_project_api):
+def test_get_ayon_data(mock_mocha_project_api: None) -> None: # noqa: ARG001
     """Test getting AYON data."""
     sys.modules["ayon_core.tools.utils"] = MagicMock()
     from ayon_mocha.api import MochaProHost
