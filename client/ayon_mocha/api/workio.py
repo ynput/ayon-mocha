@@ -4,9 +4,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional
 
-from mocha.project import Clip, Project, get_current_project
+from mocha.project import get_current_project
 
-from .lib import copy_placeholder_clip, quit_mocha, run_mocha
+from .lib import create_empy_project, quit_mocha, run_mocha
 
 
 def file_extensions() -> list[str]:
@@ -34,7 +34,7 @@ def save_file(filepath: Optional[Path]) -> None:
     if not project:
         if not filepath:
             return
-        project = _create_empy_project(filepath)
+        project = create_empy_project(filepath)
     if filepath:
         project.save_as(filepath.as_posix())
         # now we need to reopen mocha with the new project
@@ -68,10 +68,3 @@ def current_file() -> Optional[Path]:
     if not project:
         return None
     return Path(project.project_file)
-
-
-def _create_empy_project(project_path: Path) -> Project:
-    """Create an empty project."""
-    clip_path = copy_placeholder_clip(project_path.parent)
-    clip = Clip(clip_path.as_posix())
-    return Project(clip)

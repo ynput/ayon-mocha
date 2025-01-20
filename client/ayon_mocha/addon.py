@@ -4,15 +4,17 @@ from __future__ import annotations
 import os
 from typing import Any
 
-from ayon_core.addon import AYONAddon, IHostAddon
+from ayon_core.addon import AYONAddon, IHostAddon, IPluginPaths
 
 from .version import __version__
 
 MOCHA_ADDON_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
-class MochaAddon(AYONAddon, IHostAddon):
+class MochaAddon(AYONAddon, IHostAddon, IPluginPaths):
     """BorisFX Mocha Pro addon for AYON."""
+
+
 
     name = "mocha"
     host_name = "mochapro"
@@ -27,3 +29,10 @@ class MochaAddon(AYONAddon, IHostAddon):
     def get_workfile_extensions(self) -> list[str]:
         """Return supported workfile extensions."""
         return [".mocha"]
+
+    def get_plugin_paths(self) -> dict[str, str]:
+        """Return plugin paths."""
+        return {
+            "load": os.path.join(MOCHA_ADDON_ROOT, "plugins", "load"),
+            "publish": os.path.join(MOCHA_ADDON_ROOT, "plugins", "publish"),
+        }

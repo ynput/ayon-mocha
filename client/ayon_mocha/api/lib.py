@@ -3,17 +3,18 @@ from __future__ import annotations
 
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from shutil import copyfile
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Optional
 
 from mocha import get_mocha_exec_name, ui
+from mocha.project import Clip, Project
 from qtpy.QtWidgets import QApplication
 
 from ayon_mocha.addon import MOCHA_ADDON_ROOT
 
 if TYPE_CHECKING:
-
     from qtpy import QtWidgets
 
 
@@ -33,7 +34,7 @@ def update_ui() -> None:
 def run_mocha(
         app: str="mochapro",
         footage_path: str="",
-        **kwargs: dict[[str, Any]]) -> None:
+        **kwargs: dict[str, Any]) -> None:
     """Run Mocha application with given command-line arguments.
 
     See https://borisfx.com/support/documentation/mocha/#_command_line
@@ -81,11 +82,10 @@ def run_mocha(
         raise ValueError(msg)
 
 
-    cmd_args = []
+    cmd_args: list[str] = []
     for key, value in kwargs.items():
         cmd_args.extend((f"--{available_args[key]}", str(value)))
-    cmd = [mocha_path]
-    cmd.extend(cmd_args)
+    cmd = [mocha_path, *cmd_args]
     if footage_path:
         cmd.append(footage_path)
 
@@ -119,3 +119,15 @@ def copy_placeholder_clip(destination:Path) -> Path:
         clip_path
     )
     return clip_path
+
+
+def create_empy_project(
+        project_path: Optional[Path] = None) -> Project:
+    """Create an empty project."""
+    if not project_path:
+        project_path = Path(tempfile.NamedTemporaryFile(
+            suffix=".mocha", delete=False).name)
+
+    clip_path = copy_placeholder_clip(project_path.parent)
+    clip = Clip(clip_path.as_posix())
+    return Project(clip)
