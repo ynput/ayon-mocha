@@ -20,12 +20,15 @@ from ayon_core.host import (
 from ayon_core.pipeline import (
     AYON_CONTAINER_ID,
     CreatedInstance,
-    get_current_context,
 )
 from ayon_core.tools.utils import host_tools
-from mocha.project import get_current_project
+from ayon_core.tools.utils.dialogs import show_message_dialog
+from mocha.project import Project
+from mocha.project import get_current_project as _get_current_project
 
-from .lib import get_main_window
+from ayon_mocha.api.lib import update_ui
+
+from .lib import create_empy_project, get_main_window
 from .workio import current_file, file_extensions, open_file, save_file
 
 if TYPE_CHECKING:
@@ -79,10 +82,12 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
     """Mocha Pro host implementation."""
 
     name = "mochapro"
+    _uninitialized_project_warning_shown = False
 
     def __init__(self):
         """Initialize the host."""
         super().__init__()
+
 
     def install(self) -> None:
         """Initialize the host."""
@@ -103,7 +108,7 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
 
         def _on_menu_about_to_show(menu_action: QtWidgets.QAction) -> None:
             """Update the menu."""
-            context = get_current_context()
+            context = self.get_current_context()
             menu_action.setText(
                 f"{context['folder_path']}, {context['task_name']}")
 
@@ -177,7 +182,7 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         file_path = current_file()
         return file_path.as_posix() if file_path else None
 
-    def get_containers(self) -> Generator[Container, None, list]:
+    def get_containers(self) -> Generator[dict, None, list]:
         """Get containers from the current workfile."""
         # sourcery skip: use-named-expression
         data = self.get_ayon_data()
@@ -193,7 +198,10 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
 
         """
         data = self.get_ayon_data()
-        containers = list(self.get_containers())
+        containers_dicts = list(self.get_containers())
+        containers = [
+            Container(**_container) for _container in containers_dicts
+        ]
         to_remove = [
             idx
             for idx, _container in enumerate(containers)
@@ -208,9 +216,36 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
 
         self.update_ayon_data(data)
 
+    def remove_container(self, container: Container) -> None:
+        """Remove a container from the current workfile.
+
+        Args:
+            container (Container): Container to remove.
+
+        """
+        data = self.get_ayon_data()
+        containers_dicts = list(self.get_containers())
+        containers = [
+            Container(**_container) for _container in containers_dicts
+        ]
+        to_remove = [
+            idx
+            for idx, _container in enumerate(containers)
+            if _container.name == container.name
+            and _container.namespace == container.namespace
+        ]
+        for idx in reversed(to_remove):
+            containers.pop(idx)
+
+        data[MOCHA_CONTAINERS_KEY] = [
+            dataclasses.asdict(_container) for _container in containers]
+
+        self.update_ayon_data(data)
+
+
     def _create_ayon_data(self) -> None:
         """Create AYON data in the current project."""
-        project = get_current_project()
+        project = self.get_current_project()
         project.notes = (
             f"{project.notes}\n"
             f"{AYON_METADATA_GUARD}\n")
@@ -228,7 +263,7 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
 
         """
         # sourcery skip: use-named-expression
-        project = get_current_project()
+        project = self.get_current_project()
         m = re.search(AYON_METADATA_REGEX, project.notes)
         if not m:
             self._create_ayon_data()
@@ -254,7 +289,9 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
             data (dict): Context data.
 
         """
-        project = get_current_project()
+        project = self.get_current_project()
+
+        print("updating data: ", data)
         original_data = self.get_ayon_data()
 
         updated_data = original_data.copy()
@@ -262,11 +299,13 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         update_str = json.dumps(
             updated_data or {}, indent=4, cls=AYONJSONEncoder)
 
+        print("updating data with str: ", update_str)
         project.notes = re.sub(
                 AYON_METADATA_REGEX,
                 AYON_METADATA_GUARD.format(update_str),
                 project.notes,
             )
+        update_ui()
 
     def get_context_data(self) -> dict:
         """Get context data from the current project."""
@@ -357,3 +396,21 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         data[MOCHA_INSTANCES_KEY] = publish_instances
 
         self.update_ayon_data(data)
+
+    def get_current_project(self) -> Project:
+        """Return the current project."""
+        project = _get_current_project()
+        if not project:
+            if not self._uninitialized_project_warning_shown:
+                show_message_dialog(
+                    "No project is opened.",
+                    (
+                        "Please open or save a project first, otherwise "
+                        "you won't be able to see the results of any "
+                        "operations you'll make."
+                    ),
+                    parent=get_main_window(),
+                )
+                self._uninitialized_project_warning_shown = True
+            return create_empy_project()
+        return project
