@@ -6,7 +6,7 @@ from typing import Optional
 
 from mocha.project import get_current_project
 
-from .lib import create_empy_project, quit_mocha, run_mocha
+from .lib import create_empty_project, quit_mocha, run_mocha
 
 
 def file_extensions() -> list[str]:
@@ -34,7 +34,7 @@ def save_file(filepath: Optional[Path]) -> None:
     if not project:
         if not filepath:
             return
-        project = create_empy_project(filepath)
+        project = create_empty_project(filepath)
     if filepath:
         project.save_as(filepath.as_posix())
         # now we need to reopen mocha with the new project

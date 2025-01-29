@@ -1,11 +1,12 @@
 """Plugin API for Mocha Pro AYON addon."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 
 from ayon_core.pipeline import (
     CreatedInstance,
     Creator,
+    load,
 )
 
 if TYPE_CHECKING:
@@ -68,15 +69,16 @@ class MochaCreator(Creator):
             if i_data["instance_id"]
         }
 
-        for instance, changes in update_list:
-            instance_data = changes.new_values
-            cur_instance_data = instances_by_id.get(instance.instance_id)
+        instance: CreatedInstance
+        for instance, _changes in update_list:
+            cur_instance_data = instances_by_id.get(instance.data["instance_id"])
+            new_data = instance.data_to_store()
             if cur_instance_data is None:
-                concurrent_instances.append(instance_data)
+                concurrent_instances.append(instance.data_to_store())
                 continue
-            for key in set(cur_instance_data) - set(instance_data):
+            for key in set(cur_instance_data) - set(new_data):
                 cur_instance_data.pop(key)
-            cur_instance_data.update(instance_data)
+            cur_instance_data.update(new_data)
         host.write_create_instances(concurrent_instances)
 
     def remove_instances(self, instances: list[CreatedInstance]) -> None:
@@ -90,3 +92,9 @@ class MochaCreator(Creator):
         for instance in instances:
             self._remove_instance_from_context(instance)
             host.remove_create_instance(instance.id)
+
+
+class MochaLoader(load.LoaderPlugin):
+    """Mocha Pro loader base class."""
+    settings_category = "mochapro"
+    hosts: ClassVar[list[str]] = ["mochapro"]

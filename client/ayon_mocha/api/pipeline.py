@@ -20,7 +20,11 @@ from ayon_core.host import (
 from ayon_core.pipeline import (
     AYON_CONTAINER_ID,
     CreatedInstance,
+    registered_host,
+    register_loader_plugin_path,
+    register_creator_plugin_path,
 )
+from ayon_core.pipeline.context_tools import get_current_task_entity
 from ayon_core.tools.utils import host_tools
 from ayon_core.tools.utils.dialogs import show_message_dialog
 from mocha.project import Project
@@ -52,6 +56,7 @@ AYON_METADATA_REGEX = re.compile(
 MOCHA_CONTEXT_KEY = "context"
 MOCHA_INSTANCES_KEY = "publish_instances"
 MOCHA_CONTAINERS_KEY = "containers"
+
 
 class AYONJSONEncoder(json.JSONEncoder):
     """Custom JSON encoder for dataclasses."""
@@ -93,6 +98,9 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         """Initialize the host."""
         pyblish.api.register_host(self.name)
         pyblish.api.register_plugin_path(PUBLISH_PATH.as_posix())
+        register_loader_plugin_path(LOAD_PATH.as_posix())
+        register_creator_plugin_path(CREATE_PATH.as_posix())
+
 
         #QtCore.QTimer.singleShot(0, self._install_menu)
         self._install_menu()
@@ -147,6 +155,12 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
 
         menu.addSeparator()
 
+        action = menu.addAction("Reset Frame Range and FPS")
+        action.triggered.connect(
+            lambda: reset_frame_range(self.get_current_project()))
+
+        menu.addSeparator()
+
         action = menu.addAction("Experimental Tools...")
         action.triggered.connect(
             lambda: host_tools.show_experimental_tools_dialog(
@@ -172,6 +186,8 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
             save_file(Path(dst_path))
         else:
             save_file(filepath=None)
+        if not _get_current_project():
+            reset_frame_range(_get_current_project())
 
     def open_workfile(self, filepath: str) -> None:
         """Open the workfile."""
@@ -414,3 +430,22 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
                 self._uninitialized_project_warning_shown = True
             return create_empy_project()
         return project
+
+
+def reset_frame_range(project: Optional[Project]) -> None:
+    """Reset frame range to the current task entity."""
+    task_entity = get_current_task_entity()
+    frame_start = task_entity["attrib"]["frameStart"]
+    frame_end = task_entity["attrib"]["frameEnd"]
+    fps = task_entity["attrib"]["fps"]
+    # resolution_width = task_entity["attrib"]["resolutionWidth"]
+    # resolution_height = task_entity["attrib"]["resolutionHeight"]
+    # pixel_aspect = task_entity["attrib"]["pixelAspect"]
+
+    if not project:
+        host: MochaProHost = registered_host()
+        project = host.get_current_project()
+
+    project.length = int(frame_end) - int(frame_start) + 1
+    project.first_frame_offset = int(frame_start)
+    project.frame_rate = fps

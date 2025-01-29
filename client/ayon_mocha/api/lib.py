@@ -1,14 +1,18 @@
 """Library functions for the Ayon Mocha API."""
 from __future__ import annotations
 
+import dataclasses
+import re
 import subprocess
 import sys
 import tempfile
+from hashlib import sha256
 from pathlib import Path
 from shutil import copyfile
 from typing import TYPE_CHECKING, Any, Optional
 
 from mocha import get_mocha_exec_name, ui
+from mocha.exporters import TrackingDataExporter
 from mocha.project import Clip, Project
 from qtpy.QtWidgets import QApplication
 
@@ -121,7 +125,7 @@ def copy_placeholder_clip(destination:Path) -> Path:
     return clip_path
 
 
-def create_empy_project(
+def create_empty_project(
         project_path: Optional[Path] = None) -> Project:
     """Create an empty project."""
     if not project_path:
