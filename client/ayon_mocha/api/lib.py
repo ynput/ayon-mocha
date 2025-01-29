@@ -125,7 +125,7 @@ def create_empty_project(
         project_path: Optional[Path] = None) -> Project:
     """Create an empty project."""
     if not project_path:
-        project_path = Path(tempfile.NamedTemporaryFile(
+        project_path = Path(tempfile.NamedTemporaryFile(  # noqa: SIM115
             suffix=".mocha", delete=False).name)
 
     clip_path = copy_placeholder_clip(project_path.parent)
