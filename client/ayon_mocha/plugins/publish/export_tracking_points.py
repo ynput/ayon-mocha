@@ -9,18 +9,16 @@ from typing import TYPE_CHECKING, ClassVar, Optional
 import clique
 from ayon_core.lib import path_to_subprocess_arg, run_subprocess
 from ayon_core.pipeline import KnownPublishError, publish
-from mocha.project import Layer, Project, View
-
 from ayon_mocha.api.lib import ExporterProcessInfo
 from ayon_mocha.api.pipeline import (
     TRACKING_EXPORTERS_REPRESENTATION_NAME_MAPPING,
 )
+from mocha.project import Layer, Project, View
 
 if TYPE_CHECKING:
     from logging import Logger
 
     import pyblish.api
-
     from ayon_mocha.api.lib import ExporterInfo
 
 EXTENSION_PATTERN = re.compile(r"(?P<name>.+)\(\*\.(?P<ext>\w+)\)")

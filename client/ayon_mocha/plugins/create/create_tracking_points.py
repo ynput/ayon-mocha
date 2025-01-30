@@ -26,18 +26,10 @@ class CreateTrackingPoints(MochaCreator):
     product_type = "trackpoints"
     icon = "cubes"
 
-    def __init__(self, *args, **kwargs):
-        """Initialize."""
-        super().__init__(*args, **kwargs)
-        # this will return exporter label as a key and exporter
-        # instance as a value. But let's rather change it to something
-        # more 'nice'.
-        self.exporters = get_exporters()
-
 
     def get_attr_defs_for_instance(self, instance: CreatedInstance) -> list:
         """Get attribute definitions for instance."""
-        exporter_items = {ex.id: ex.label for ex in self.exporters}
+        exporter_items = {ex.id: ex.label for ex in get_exporters()}
         layers = {
                     idx: layer.name
                     for idx, layer in enumerate(

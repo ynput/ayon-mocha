@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING, ClassVar
 import pyblish.api
 from ayon_core.pipeline import KnownPublishError
 from ayon_core.pipeline.create import get_product_name
-
 from ayon_mocha.api.lib import get_exporters
 
 if TYPE_CHECKING:

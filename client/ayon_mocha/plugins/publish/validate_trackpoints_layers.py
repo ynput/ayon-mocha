@@ -10,7 +10,6 @@ from ayon_core.pipeline import PublishValidationError
 if TYPE_CHECKING:
     from logging import Logger
 
-    from mocha.project import Layer
 
 
 class ValidateTrackpointLayers(pyblish.api.Validator):
@@ -24,15 +23,13 @@ class ValidateTrackpointLayers(pyblish.api.Validator):
 
     def process(self, instance: pyblish.api.Instance) -> None:
         """Process all the trackpoints."""
-        try:
-            layer: Layer = instance.data["layer"]
-        except KeyError as e:
+        if not instance.data.get("layer"):
             msg = (
                 f"Specified layer index ({instance.data['layer']} "
                 "does not exist in the project"
             )
             raise PublishValidationError(
-                msg, description=self._missing_layer_description()) from e
+                msg, description=self._missing_layer_description())
 
         if len(instance.data["use_exporters"]) == 0:
             msg = (
