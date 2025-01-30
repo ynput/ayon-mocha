@@ -1,0 +1,51 @@
+"""Create shape data instance."""
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from ayon_core.lib import (
+    EnumDef,
+    UILabelDef,
+    UISeparatorDef,
+)
+from ayon_mocha.api.lib import get_shape_exporters
+from ayon_mocha.api.plugin import MochaCreator
+
+if TYPE_CHECKING:
+    from ayon_core.pipeline import CreatedInstance
+
+
+class CreateShapeData(MochaCreator):
+    """Create shape instance."""
+    identifier = "io.ayon.creators.mochapro.matteshapes"
+    label = "Shape Data"
+    description = __doc__
+    product_type = "matteshapes"
+    icon = "circle"
+
+    def get_attr_defs_for_instance(self, instance: CreatedInstance) -> list:
+        """Get attribute definitions for instance."""
+        exporter_items = {ex.id: ex.label for ex in get_shape_exporters()}
+        layers = {
+                    idx: layer.name
+                    for idx, layer in enumerate(
+                        self.create_context.host.get_current_project().layers)
+                } or {-1: "No layers"}
+
+        return [
+            EnumDef("layers",
+                    label="Layers",
+                    items=layers,
+                    multiselection=True),
+            EnumDef("exporter",
+                    label="Exporter format",
+                    items=exporter_items, multiselection=True),
+            UISeparatorDef(),
+            UILabelDef(
+                "Exporter Options (not all are available in all exporters)"),
+            EnumDef("layer_mode", label="Layer mode",
+                    items={
+                        "selected": "Selected layers",
+                        "all": "All layers"
+                    }),
+        ]

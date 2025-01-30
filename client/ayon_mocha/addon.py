@@ -4,14 +4,14 @@ from __future__ import annotations
 import os
 from typing import Any
 
-from ayon_core.addon import AYONAddon, IHostAddon, IPluginPaths
+from ayon_core.addon import AYONAddon, IHostAddon
 
 from .version import __version__
 
 MOCHA_ADDON_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
-class MochaAddon(AYONAddon, IHostAddon, IPluginPaths):
+class MochaAddon(AYONAddon, IHostAddon):
     """BorisFX Mocha Pro addon for AYON."""
 
     name = "mocha"
