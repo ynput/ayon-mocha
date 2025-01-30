@@ -166,7 +166,7 @@ def create_empty_project(
     return Project(clip)
 
 
-def get_exporters() -> list[ExporterInfo]:
+def get_tracking_exporters() -> list[ExporterInfo]:
     """Return all registered exporters as a list."""
     return [
         ExporterInfo(
