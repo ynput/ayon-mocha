@@ -71,7 +71,8 @@ class MochaCreator(Creator):
 
         instance: CreatedInstance
         for instance, _changes in update_list:
-            cur_instance_data = instances_by_id.get(instance.data["instance_id"])
+            cur_instance_data = instances_by_id.get(
+                instance.data["instance_id"])
             new_data = instance.data_to_store()
             if cur_instance_data is None:
                 concurrent_instances.append(instance.data_to_store())

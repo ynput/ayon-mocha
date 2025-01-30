@@ -20,6 +20,8 @@ from ayon_core.host import (
 from ayon_core.pipeline import (
     AYON_CONTAINER_ID,
     CreatedInstance,
+    register_creator_plugin_path,
+    register_loader_plugin_path,
     registered_host,
 )
 from ayon_core.pipeline.context_tools import get_current_task_entity
@@ -148,6 +150,9 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         """Initialize the host."""
         pyblish.api.register_host(self.name)
         pyblish.api.register_plugin_path(PUBLISH_PATH.as_posix())
+        register_loader_plugin_path(LOAD_PATH.as_posix())
+        register_creator_plugin_path(CREATE_PATH.as_posix())
+
 
         #QtCore.QTimer.singleShot(0, self._install_menu)
         self._install_menu()
@@ -353,8 +358,6 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
 
         """
         project = self.get_current_project()
-
-        print("updating data: ", data)
         original_data = self.get_ayon_data()
 
         updated_data = original_data.copy()
@@ -362,7 +365,6 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         update_str = json.dumps(
             updated_data or {}, indent=4, cls=AYONJSONEncoder)
 
-        print("updating data with str: ", update_str)
         project.notes = re.sub(
                 AYON_METADATA_REGEX,
                 AYON_METADATA_GUARD.format(update_str),
@@ -392,7 +394,6 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         ayon_data = self.get_ayon_data()
         ayon_data[MOCHA_CONTEXT_KEY] = data
         self.update_ayon_data(ayon_data)
-
 
     def get_publish_instances(self) -> list[dict]:
         """Get publish instances from the current project."""

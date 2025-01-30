@@ -95,4 +95,3 @@ class LoadClip(MochaLoader):
         container["representation"] = repre_entity["id"]
         container["version"] = str(version_entity["version"])
         host.add_container(Container(**container))
-
