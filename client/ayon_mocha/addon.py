@@ -14,8 +14,6 @@ MOCHA_ADDON_ROOT = os.path.dirname(os.path.abspath(__file__))
 class MochaAddon(AYONAddon, IHostAddon, IPluginPaths):
     """BorisFX Mocha Pro addon for AYON."""
 
-
-
     name = "mocha"
     host_name = "mochapro"
     title = "Mocha Pro"
@@ -29,10 +27,3 @@ class MochaAddon(AYONAddon, IHostAddon, IPluginPaths):
     def get_workfile_extensions(self) -> list[str]:
         """Return supported workfile extensions."""
         return [".mocha"]
-
-    def get_plugin_paths(self) -> dict[str, str]:
-        """Return plugin paths."""
-        return {
-            "load": os.path.join(MOCHA_ADDON_ROOT, "plugins", "load"),
-            "publish": os.path.join(MOCHA_ADDON_ROOT, "plugins", "publish"),
-        }

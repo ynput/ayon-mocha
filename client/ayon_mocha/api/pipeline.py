@@ -20,7 +20,9 @@ from ayon_core.host import (
 from ayon_core.pipeline import (
     AYON_CONTAINER_ID,
     CreatedInstance,
+    registered_host,
 )
+from ayon_core.pipeline.context_tools import get_current_task_entity
 from ayon_core.tools.utils import host_tools
 from ayon_core.tools.utils.dialogs import show_message_dialog
 from mocha.project import Project
@@ -52,6 +54,59 @@ AYON_METADATA_REGEX = re.compile(
 MOCHA_CONTEXT_KEY = "context"
 MOCHA_INSTANCES_KEY = "publish_instances"
 MOCHA_CONTAINERS_KEY = "containers"
+
+# this is a mapping of representation names to exporter ids as
+# the representation name has limits both in how it is now displayed
+# in the UI and how it is stored in the project - it is a string
+# without spaces and special characters. It must be updated now
+# and then to keep it in sync with the actual Mocha exporting
+# capabilities.
+TRACKING_EXPORTERS_REPRESENTATION_NAME_MAPPING = {
+    "2D SynthEyes Tracker Data (*.sni)": "SynthEyes2DTracker",
+    "After Effects CC Power Pin (*.txt)": "AfxCCPowerPin",
+    ("After Effects CS3 Corner Pin "
+     "[supports motion blur, CS3 and older] (*.txt)"): "AfxCS3CornerPin",
+    ("After Effects Corner Pin "
+     "[corner pin only, supports "
+     "RG Warp and mochaImport] (*.txt)"): "AfxCornerPin",
+    ("After Effects Corner Pin "
+     "[supports motion blur] (*.txt)"): "AfxCornerPinMotionBlur",
+    ("After Effects Transform Data "
+     "[position, scale and rotation] (*.txt)"): "AfxTransformData",
+    "Alembic Mesh Data (*.abc)": "AlembicMeshData",
+    "Alembic Vertex Transform Data (*.abc)": "AlembicVertexTransform",
+    "Assimilate SCRATCH Corner Pin (*.txt)": "AssimilateSCRATCHCornerPin",
+    "Autodesk Flame Axis (*.mask)": "FlameAxis",
+    "Autodesk IFFFSE Point Tracker Data (*.ascii)": "IFFFSEPointTracker",
+    ("Autodesk IFFFSE Point Tracker "
+     "Data (Flame 2014) (*.ascii)"): "Flame2014PointTracker",
+    "Autodesk IFFFSE Stabilizer Data (*.stabilizer)": "IFFFSEStabilizer",
+    ("Autodesk IFFFSE Stabilizer Data "
+    "(Flame 2014) (*.stabilizer)"): "Flame2014Stabilize",
+    "Avid DS Tracking Data (*.fraw)": "AvidDSTrackingData",
+    "Blackmagic Fusion COMP Data (*.comp)": "FusionCompData",
+    ("Boris FX Center Point "
+     "(Continuum 11 and older) (*.txt)"): "BorisFXCenterPoint",
+    "Boris FX Corner Pin (Continuum 11 and older) (*.txt)": "BorisFXCornerPin",
+    ("Final Cut Basic Motion "
+     "[translate, rotate, scale] (*.xml)"): "FinalCutBasicMotion",
+    "Final Cut Distort [corner pin] (*.xml)": "FinalCutDistort",
+    "Flowbox corner pin (*.flowbox)": "FlowboxCornerPin",
+    "HitFilm Corner Pin [supports motion blur] (*.hfcs)": "HitFilmCornerPin",
+    ("HitFilm Transform Data "
+     "[position, scale and rotation] (*.hfcs)"): "HitFilmTransformData",
+    "Mistika Point Tracker File (*.trk)": "MistikaPointTracker",
+    "MochaBlend tracking data (*.txt)": "MochaBlend",
+    "Motion basic transform (*.motn)": "MotionBasicTransform",
+    "Motion corner pin (*.motn)": "MotionCornerPin",
+    "Nuke 7 Tracker (*.nk)": "Nuke7Tracker",
+    "Nuke Ascii (*.txt)": "NukeAscii",
+    "Nuke Corner Pin (*.nk)": "NukeCornerPin",
+    "Nuke Mesh Tracker (*.nk)": "NukeMeshTracker",
+    "Quantel Corner Pin Data (*.xml)": "QuantelCornerPin",
+    "Shake Script (*.shk)": "ShakeScript",
+    "Silhouette corner pin (*.txt)": "SilhouetteCornerPin",
+}
 
 class AYONJSONEncoder(json.JSONEncoder):
     """Custom JSON encoder for dataclasses."""
@@ -147,6 +202,12 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
 
         menu.addSeparator()
 
+        action = menu.addAction("Reset Frame Range and FPS")
+        action.triggered.connect(
+            lambda: reset_frame_range(self.get_current_project()))
+
+        menu.addSeparator()
+
         action = menu.addAction("Experimental Tools...")
         action.triggered.connect(
             lambda: host_tools.show_experimental_tools_dialog(
@@ -172,6 +233,8 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
             save_file(Path(dst_path))
         else:
             save_file(filepath=None)
+        if not _get_current_project():
+            reset_frame_range(_get_current_project())
 
     def open_workfile(self, filepath: str) -> None:
         """Open the workfile."""
@@ -414,3 +477,22 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
                 self._uninitialized_project_warning_shown = True
             return create_empy_project()
         return project
+
+
+def reset_frame_range(project: Optional[Project]) -> None:
+    """Reset frame range to the current task entity."""
+    task_entity = get_current_task_entity()
+    frame_start = task_entity["attrib"]["frameStart"]
+    frame_end = task_entity["attrib"]["frameEnd"]
+    fps = task_entity["attrib"]["fps"]
+    # resolution_width = task_entity["attrib"]["resolutionWidth"]
+    # resolution_height = task_entity["attrib"]["resolutionHeight"]
+    # pixel_aspect = task_entity["attrib"]["pixelAspect"]
+
+    if not project:
+        host: MochaProHost = registered_host()
+        project = host.get_current_project()
+
+    project.length = int(frame_end) - int(frame_start) + 1
+    project.first_frame_offset = int(frame_start)
+    project.frame_rate = fps

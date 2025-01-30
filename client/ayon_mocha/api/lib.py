@@ -1,14 +1,18 @@
 """Library functions for the Ayon Mocha API."""
 from __future__ import annotations
 
+import dataclasses
+import re
 import subprocess
 import sys
 import tempfile
+from hashlib import sha256
 from pathlib import Path
 from shutil import copyfile
 from typing import TYPE_CHECKING, Any, Optional
 
 from mocha import get_mocha_exec_name, ui
+from mocha.exporters import TrackingDataExporter
 from mocha.project import Clip, Project
 from qtpy.QtWidgets import QApplication
 
@@ -16,6 +20,35 @@ from ayon_mocha.addon import MOCHA_ADDON_ROOT
 
 if TYPE_CHECKING:
     from qtpy import QtWidgets
+
+
+EXTENSION_PATTERN = re.compile(r"(?P<name>.+)\(\*\.(?P<ext>\w+)\)")
+
+
+"""
+These dataclasses are here because they
+cannot be defined directly in pyblish plugins.
+There seems to be an issue (at least in python 3.7)
+with dataclass checking for __module__ in class and
+that one is missing in discovered pyblish
+plugin classes.
+"""
+@dataclasses.dataclass
+class ExporterInfo:
+    """Exporter information."""
+    id: str
+    label: str
+    exporter: TrackingDataExporter
+
+
+@dataclasses.dataclass
+class ExporterProcessInfo:
+    """Exporter process information."""
+    mocha_python_path: Path
+    mocha_exporter_path: Path
+    current_project_path: Path
+    staging_dir: Path
+    options: dict[str, bool]
 
 
 def get_main_window() -> QtWidgets.QWidget:
@@ -131,3 +164,15 @@ def create_empy_project(
     clip_path = copy_placeholder_clip(project_path.parent)
     clip = Clip(clip_path.as_posix())
     return Project(clip)
+
+
+def get_exporters() -> list[ExporterInfo]:
+    """Return all registered exporters as a list."""
+    return [
+        ExporterInfo(
+            id=sha256(k.encode()).hexdigest(),
+            label=k,
+            exporter=v)
+        for k, v in sorted(
+            TrackingDataExporter.registered_exporters().items())
+    ]

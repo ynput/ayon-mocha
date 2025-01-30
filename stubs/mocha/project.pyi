@@ -1,5 +1,5 @@
 import types
-from typing import ClassVar, Optional
+from typing import ClassVar, Optional, Union
 
 import PySide2.QtCore
 import Shiboken
@@ -501,18 +501,22 @@ class Keyframes(Shiboken.Object):
     def __setitem__(self, index, object) -> None: ...
 
 class Layer(Shiboken.Object):
-    link_to_track: Incomplete
-    locked: Incomplete
-    matte_color: Incomplete
-    name: Incomplete
-    parent: Incomplete
-    psets: Incomplete
-    selected: Incomplete
-    stroke_color: Incomplete
-    visibility: Incomplete
-    z_order: Incomplete
+    link_to_track: Optional[Layer]
+    locked: bool
+    matte_color: tuple[float, float, float]
+    name: str
+    parent: LayerGroup
+    psets: ParameterSet
+    selected: bool
+    stroke_color: tuple[float, float, float]
+    visibility: bool
+    z_order: int
     def __init__(self, *args, **kwargs) -> None: ...
-    def add_bezier_contour(self, *args, **kwargs): ...
+    def add_bezier_contour(
+            self,
+            __time: float,
+            __bezier_data: BezierContour | list[BezierControlPointData],
+            __view=Optional[View]) -> BezierContour: ...
     def add_contour(self, *args, **kwargs): ...
     def add_xspline_contour(self, *args, **kwargs): ...
     def get_contours(self, *args, **kwargs): ...
@@ -779,7 +783,7 @@ class Project:
     def get_project_file(self, *args, **kwargs): ...
     def get_views(self, *args, **kwargs): ...
     def layer(self, *args, **kwargs): ...
-    def new_output_clip(self, *args, **kwargs): ...
+    def new_output_clip(self, __input_clip: Clip, __clip_name: str) -> Clip: ...
     def parameter(self, *args, **kwargs): ...
     def parameter_set(self, *args, **kwargs): ...
     def render(self, *args, **kwargs): ...

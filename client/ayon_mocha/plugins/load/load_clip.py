@@ -5,16 +5,17 @@ import time
 from typing import ClassVar, Optional
 
 from ayon_core.lib.transcoding import IMAGE_EXTENSIONS
-from ayon_core.pipeline import get_representation_path, load, registered_host
+from ayon_core.pipeline import get_representation_path, registered_host
 from ayon_mocha.api.lib import update_ui
 from ayon_mocha.api.pipeline import (
     Container,
     MochaProHost,
 )
+from ayon_mocha.api.plugin import MochaLoader
 from mocha.project import Clip
 
 
-class LoadClip(load.LoaderPlugin):
+class LoadClip(MochaLoader):
     """Load a clip from a file."""
 
     label = "Load Clip"
@@ -22,9 +23,9 @@ class LoadClip(load.LoaderPlugin):
     icon = "code-fork"
     color = "orange"
 
-    product_types: ClassVar[list[str]] = {"*"}
-    representations: ClassVar[list[str]] = {"*"}
-    extensions: ClassVar[list[str]] = {
+    product_types: ClassVar[set[str]] = {"*"}
+    representations: ClassVar[set[str]] = {"*"}
+    extensions: ClassVar[set[str]] = {
         ext.lstrip(".") for ext in IMAGE_EXTENSIONS}
 
     def load(self,
@@ -39,6 +40,7 @@ class LoadClip(load.LoaderPlugin):
             file_path = self.filepath_from_context(context)
             clip = Clip(file_path, name)
             project.add_clip(clip, name)
+            project.new_output_clip(clip, name)
             container = Container(
                 name=name,
                 namespace=namespace or "",
