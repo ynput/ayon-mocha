@@ -109,11 +109,6 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
     name = "mochapro"
     _uninitialized_project_warning_shown = False
 
-    def __init__(self):
-        """Initialize the host."""
-        super().__init__()
-
-
     def install(self) -> None:
         """Initialize the host."""
         pyblish.api.register_host(self.name)
