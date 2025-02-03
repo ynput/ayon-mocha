@@ -32,14 +32,14 @@ from mocha.project import get_current_project as _get_current_project
 
 from ayon_mocha.api.lib import update_ui
 
-from .lib import create_empy_project, get_main_window
+from .lib import create_empty_project, get_main_window
 from .workio import current_file, file_extensions, open_file, save_file
 
 if TYPE_CHECKING:
     from qtpy import QtWidgets
 
 log = logging.getLogger("ayon_mocha")
-HOST_DIR = Path(__file__).resolve().parent
+HOST_DIR = Path(__file__).resolve().parent.parent
 PLUGINS_DIR = HOST_DIR / "plugins"
 PUBLISH_PATH = PLUGINS_DIR / "publish"
 LOAD_PATH =  PLUGINS_DIR / "load"
@@ -140,11 +140,6 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
 
     name = "mochapro"
     _uninitialized_project_warning_shown = False
-
-    def __init__(self):
-        """Initialize the host."""
-        super().__init__()
-
 
     def install(self) -> None:
         """Initialize the host."""
@@ -476,7 +471,7 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
                     parent=get_main_window(),
                 )
                 self._uninitialized_project_warning_shown = True
-            return create_empy_project()
+            return create_empty_project()
         return project
 
 
