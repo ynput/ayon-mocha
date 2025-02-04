@@ -30,9 +30,8 @@ from ayon_core.tools.utils.dialogs import show_message_dialog
 from mocha.project import Project
 from mocha.project import get_current_project as _get_current_project
 
-from ayon_mocha.api.lib import update_ui
+from ayon_mocha.api.lib import create_empty_project, get_main_window, update_ui
 
-from .lib import create_empty_project, get_main_window
 from .workio import current_file, file_extensions, open_file, save_file
 
 if TYPE_CHECKING:
@@ -56,6 +55,7 @@ AYON_METADATA_REGEX = re.compile(
 MOCHA_CONTEXT_KEY = "context"
 MOCHA_INSTANCES_KEY = "publish_instances"
 MOCHA_CONTAINERS_KEY = "containers"
+
 
 
 class AYONJSONEncoder(json.JSONEncoder):

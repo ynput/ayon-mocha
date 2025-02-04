@@ -54,7 +54,8 @@ class LoadTrackableClip(MochaLoader):
 
             for cnt in host.get_containers():
                 if cnt.get("name") == current_clip.name:
-                    cnt["representation"] = str(context["representation"]["id"])
+                    cnt["representation"] = str(
+                        context["representation"]["id"])
                     return
 
             container = Container(

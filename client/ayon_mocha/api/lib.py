@@ -1,14 +1,18 @@
 """Library functions for the Ayon Mocha API."""
 from __future__ import annotations
 
+import dataclasses
+import re
 import subprocess
 import sys
 import tempfile
+from hashlib import sha256
 from pathlib import Path
 from shutil import copyfile
 from typing import TYPE_CHECKING, Any, Optional
 
 from mocha import get_mocha_exec_name, ui
+from mocha.exporters import TrackingDataExporter
 from mocha.project import Clip, Project
 from qtpy.QtWidgets import QApplication
 
@@ -16,6 +20,90 @@ from ayon_mocha.addon import MOCHA_ADDON_ROOT
 
 if TYPE_CHECKING:
     from qtpy import QtWidgets
+
+
+EXTENSION_PATTERN = re.compile(r"(?P<name>.+)\(\*\.(?P<ext>\w+)\)")
+
+
+# this is a mapping of representation names to exporter ids as
+# the representation name has limits both in how it is now displayed
+# in the UI and how it is stored in the project - it is a string
+# without spaces and special characters. It must be updated now
+# and then to keep it in sync with the actual Mocha exporting
+# capabilities.
+TRACKING_EXPORTERS_REPRESENTATION_NAME_MAPPING = {
+    "2D SynthEyes Tracker Data (*.sni)": "SynthEyes2DTracker",
+    "After Effects CC Power Pin (*.txt)": "AfxCCPowerPin",
+    ("After Effects CS3 Corner Pin "
+     "[supports motion blur, CS3 and older] (*.txt)"): "AfxCS3CornerPin",
+    ("After Effects Corner Pin "
+     "[corner pin only, supports "
+     "RG Warp and mochaImport] (*.txt)"): "AfxCornerPin",
+    ("After Effects Corner Pin "
+     "[supports motion blur] (*.txt)"): "AfxCornerPinMotionBlur",
+    ("After Effects Transform Data "
+     "[position, scale and rotation] (*.txt)"): "AfxTransformData",
+    "Alembic Mesh Data (*.abc)": "AlembicMeshData",
+    "Alembic Vertex Transform Data (*.abc)": "AlembicVertexTransform",
+    "Assimilate SCRATCH Corner Pin (*.txt)": "AssimilateSCRATCHCornerPin",
+    "Autodesk Flame Axis (*.mask)": "FlameAxis",
+    "Autodesk IFFFSE Point Tracker Data (*.ascii)": "IFFFSEPointTracker",
+    ("Autodesk IFFFSE Point Tracker "
+     "Data (Flame 2014) (*.ascii)"): "Flame2014PointTracker",
+    "Autodesk IFFFSE Stabilizer Data (*.stabilizer)": "IFFFSEStabilizer",
+    ("Autodesk IFFFSE Stabilizer Data "
+    "(Flame 2014) (*.stabilizer)"): "Flame2014Stabilize",
+    "Avid DS Tracking Data (*.fraw)": "AvidDSTrackingData",
+    "Blackmagic Fusion COMP Data (*.comp)": "FusionCompData",
+    ("Boris FX Center Point "
+     "(Continuum 11 and older) (*.txt)"): "BorisFXCenterPoint",
+    "Boris FX Corner Pin (Continuum 11 and older) (*.txt)": "BorisFXCornerPin",
+    ("Final Cut Basic Motion "
+     "[translate, rotate, scale] (*.xml)"): "FinalCutBasicMotion",
+    "Final Cut Distort [corner pin] (*.xml)": "FinalCutDistort",
+    "Flowbox corner pin (*.flowbox)": "FlowboxCornerPin",
+    "HitFilm Corner Pin [supports motion blur] (*.hfcs)": "HitFilmCornerPin",
+    ("HitFilm Transform Data "
+     "[position, scale and rotation] (*.hfcs)"): "HitFilmTransformData",
+    "Mistika Point Tracker File (*.trk)": "MistikaPointTracker",
+    "MochaBlend tracking data (*.txt)": "MochaBlend",
+    "Motion basic transform (*.motn)": "MotionBasicTransform",
+    "Motion corner pin (*.motn)": "MotionCornerPin",
+    "Nuke 7 Tracker (*.nk)": "Nuke7Tracker",
+    "Nuke Ascii (*.txt)": "NukeAscii",
+    "Nuke Corner Pin (*.nk)": "NukeCornerPin",
+    "Nuke Mesh Tracker (*.nk)": "NukeMeshTracker",
+    "Quantel Corner Pin Data (*.xml)": "QuantelCornerPin",
+    "Shake Script (*.shk)": "ShakeScript",
+    "Silhouette corner pin (*.txt)": "SilhouetteCornerPin",
+}
+
+
+"""
+These dataclasses are here because they
+cannot be defined directly in pyblish plugins.
+There seems to be an issue (at least in python 3.7)
+with dataclass checking for __module__ in class and
+that one is missing in discovered pyblish
+plugin classes.
+"""
+@dataclasses.dataclass
+class ExporterInfo:
+    """Exporter information."""
+    id: str
+    label: str
+    exporter: TrackingDataExporter
+    short_name: str
+
+
+@dataclasses.dataclass
+class ExporterProcessInfo:
+    """Exporter process information."""
+    mocha_python_path: Path
+    mocha_exporter_path: Path
+    current_project_path: Path
+    staging_dir: Path
+    options: dict[str, bool]
 
 
 def get_main_window() -> QtWidgets.QWidget:
@@ -131,3 +219,17 @@ def create_empty_project(
     clip_path = copy_placeholder_clip(project_path.parent)
     clip = Clip(clip_path.as_posix())
     return Project(clip)
+
+
+def get_tracking_exporters() -> list[ExporterInfo]:
+    """Return all registered exporters as a list."""
+    return [
+        ExporterInfo(
+            id=sha256(k.encode()).hexdigest(),
+            label=k,
+            exporter=v,
+            short_name=TRACKING_EXPORTERS_REPRESENTATION_NAME_MAPPING.get(
+                k, k))
+        for k, v in sorted(
+            TrackingDataExporter.registered_exporters().items())
+    ]
