@@ -7,8 +7,10 @@ from typing import TYPE_CHECKING, ClassVar, List, Optional
 
 import clique
 from ayon_core.pipeline import KnownPublishError, publish
-from ayon_mocha.api.lib import ExporterProcessInfo
-from ayon_mocha.api.pipeline import SHAPE_EXPORTERS_REPRESENTATION_NAME_MAPPING
+from ayon_mocha.api.lib import (
+    SHAPE_EXPORTERS_REPRESENTATION_NAME_MAPPING,
+    ExporterProcessInfo,
+)
 from mocha.project import Layer, Project, View
 
 if TYPE_CHECKING:

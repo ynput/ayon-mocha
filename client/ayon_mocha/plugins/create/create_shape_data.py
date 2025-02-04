@@ -26,6 +26,21 @@ class CreateShapeData(MochaCreator):
     def get_attr_defs_for_instance(self, instance: CreatedInstance) -> list:
         """Get attribute definitions for instance."""
         exporter_items = {ex.id: ex.label for ex in get_shape_exporters()}
+
+        settings = (
+            self.project_settings
+            ["mocha"]["create"]["CreateShapeData"]
+        )
+
+        exporters = get_shape_exporters()
+        exporter_items = {ex.id: ex.label for ex in exporters}
+
+        preselect_exporters = [
+            ex.id
+            for ex in exporters
+            if ex.short_name in settings["default_exporters"]
+        ]
+
         layers = {
                     idx: layer.name
                     for idx, layer in enumerate(
@@ -39,7 +54,9 @@ class CreateShapeData(MochaCreator):
                     multiselection=True),
             EnumDef("exporter",
                     label="Exporter format",
-                    items=exporter_items, multiselection=True),
+                    items=exporter_items,
+                    multiselection=True,
+                    default=preselect_exporters),
             UISeparatorDef(),
             UILabelDef(
                 "Exporter Options (not all are available in all exporters)"),
