@@ -30,9 +30,8 @@ from ayon_core.tools.utils.dialogs import show_message_dialog
 from mocha.project import Project
 from mocha.project import get_current_project as _get_current_project
 
-from ayon_mocha.api.lib import update_ui
+from ayon_mocha.api.lib import create_empty_project, get_main_window, update_ui
 
-from .lib import create_empty_project, get_main_window
 from .workio import current_file, file_extensions, open_file, save_file
 
 if TYPE_CHECKING:
@@ -57,58 +56,7 @@ MOCHA_CONTEXT_KEY = "context"
 MOCHA_INSTANCES_KEY = "publish_instances"
 MOCHA_CONTAINERS_KEY = "containers"
 
-# this is a mapping of representation names to exporter ids as
-# the representation name has limits both in how it is now displayed
-# in the UI and how it is stored in the project - it is a string
-# without spaces and special characters. It must be updated now
-# and then to keep it in sync with the actual Mocha exporting
-# capabilities.
-TRACKING_EXPORTERS_REPRESENTATION_NAME_MAPPING = {
-    "2D SynthEyes Tracker Data (*.sni)": "SynthEyes2DTracker",
-    "After Effects CC Power Pin (*.txt)": "AfxCCPowerPin",
-    ("After Effects CS3 Corner Pin "
-     "[supports motion blur, CS3 and older] (*.txt)"): "AfxCS3CornerPin",
-    ("After Effects Corner Pin "
-     "[corner pin only, supports "
-     "RG Warp and mochaImport] (*.txt)"): "AfxCornerPin",
-    ("After Effects Corner Pin "
-     "[supports motion blur] (*.txt)"): "AfxCornerPinMotionBlur",
-    ("After Effects Transform Data "
-     "[position, scale and rotation] (*.txt)"): "AfxTransformData",
-    "Alembic Mesh Data (*.abc)": "AlembicMeshData",
-    "Alembic Vertex Transform Data (*.abc)": "AlembicVertexTransform",
-    "Assimilate SCRATCH Corner Pin (*.txt)": "AssimilateSCRATCHCornerPin",
-    "Autodesk Flame Axis (*.mask)": "FlameAxis",
-    "Autodesk IFFFSE Point Tracker Data (*.ascii)": "IFFFSEPointTracker",
-    ("Autodesk IFFFSE Point Tracker "
-     "Data (Flame 2014) (*.ascii)"): "Flame2014PointTracker",
-    "Autodesk IFFFSE Stabilizer Data (*.stabilizer)": "IFFFSEStabilizer",
-    ("Autodesk IFFFSE Stabilizer Data "
-    "(Flame 2014) (*.stabilizer)"): "Flame2014Stabilize",
-    "Avid DS Tracking Data (*.fraw)": "AvidDSTrackingData",
-    "Blackmagic Fusion COMP Data (*.comp)": "FusionCompData",
-    ("Boris FX Center Point "
-     "(Continuum 11 and older) (*.txt)"): "BorisFXCenterPoint",
-    "Boris FX Corner Pin (Continuum 11 and older) (*.txt)": "BorisFXCornerPin",
-    ("Final Cut Basic Motion "
-     "[translate, rotate, scale] (*.xml)"): "FinalCutBasicMotion",
-    "Final Cut Distort [corner pin] (*.xml)": "FinalCutDistort",
-    "Flowbox corner pin (*.flowbox)": "FlowboxCornerPin",
-    "HitFilm Corner Pin [supports motion blur] (*.hfcs)": "HitFilmCornerPin",
-    ("HitFilm Transform Data "
-     "[position, scale and rotation] (*.hfcs)"): "HitFilmTransformData",
-    "Mistika Point Tracker File (*.trk)": "MistikaPointTracker",
-    "MochaBlend tracking data (*.txt)": "MochaBlend",
-    "Motion basic transform (*.motn)": "MotionBasicTransform",
-    "Motion corner pin (*.motn)": "MotionCornerPin",
-    "Nuke 7 Tracker (*.nk)": "Nuke7Tracker",
-    "Nuke Ascii (*.txt)": "NukeAscii",
-    "Nuke Corner Pin (*.nk)": "NukeCornerPin",
-    "Nuke Mesh Tracker (*.nk)": "NukeMeshTracker",
-    "Quantel Corner Pin Data (*.xml)": "QuantelCornerPin",
-    "Shake Script (*.shk)": "ShakeScript",
-    "Silhouette corner pin (*.txt)": "SilhouetteCornerPin",
-}
+
 
 class AYONJSONEncoder(json.JSONEncoder):
     """Custom JSON encoder for dataclasses."""

@@ -9,9 +9,9 @@ from typing import TYPE_CHECKING, ClassVar, Optional
 import clique
 from ayon_core.lib import path_to_subprocess_arg, run_subprocess
 from ayon_core.pipeline import KnownPublishError, publish
-from ayon_mocha.api.lib import ExporterProcessInfo
-from ayon_mocha.api.pipeline import (
+from ayon_mocha.api.lib import (
     TRACKING_EXPORTERS_REPRESENTATION_NAME_MAPPING,
+    ExporterProcessInfo,
 )
 from mocha.project import Layer, Project, View
 

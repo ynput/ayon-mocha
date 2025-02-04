@@ -25,6 +25,60 @@ if TYPE_CHECKING:
 EXTENSION_PATTERN = re.compile(r"(?P<name>.+)\(\*\.(?P<ext>\w+)\)")
 
 
+# this is a mapping of representation names to exporter ids as
+# the representation name has limits both in how it is now displayed
+# in the UI and how it is stored in the project - it is a string
+# without spaces and special characters. It must be updated now
+# and then to keep it in sync with the actual Mocha exporting
+# capabilities.
+TRACKING_EXPORTERS_REPRESENTATION_NAME_MAPPING = {
+    "2D SynthEyes Tracker Data (*.sni)": "SynthEyes2DTracker",
+    "After Effects CC Power Pin (*.txt)": "AfxCCPowerPin",
+    ("After Effects CS3 Corner Pin "
+     "[supports motion blur, CS3 and older] (*.txt)"): "AfxCS3CornerPin",
+    ("After Effects Corner Pin "
+     "[corner pin only, supports "
+     "RG Warp and mochaImport] (*.txt)"): "AfxCornerPin",
+    ("After Effects Corner Pin "
+     "[supports motion blur] (*.txt)"): "AfxCornerPinMotionBlur",
+    ("After Effects Transform Data "
+     "[position, scale and rotation] (*.txt)"): "AfxTransformData",
+    "Alembic Mesh Data (*.abc)": "AlembicMeshData",
+    "Alembic Vertex Transform Data (*.abc)": "AlembicVertexTransform",
+    "Assimilate SCRATCH Corner Pin (*.txt)": "AssimilateSCRATCHCornerPin",
+    "Autodesk Flame Axis (*.mask)": "FlameAxis",
+    "Autodesk IFFFSE Point Tracker Data (*.ascii)": "IFFFSEPointTracker",
+    ("Autodesk IFFFSE Point Tracker "
+     "Data (Flame 2014) (*.ascii)"): "Flame2014PointTracker",
+    "Autodesk IFFFSE Stabilizer Data (*.stabilizer)": "IFFFSEStabilizer",
+    ("Autodesk IFFFSE Stabilizer Data "
+    "(Flame 2014) (*.stabilizer)"): "Flame2014Stabilize",
+    "Avid DS Tracking Data (*.fraw)": "AvidDSTrackingData",
+    "Blackmagic Fusion COMP Data (*.comp)": "FusionCompData",
+    ("Boris FX Center Point "
+     "(Continuum 11 and older) (*.txt)"): "BorisFXCenterPoint",
+    "Boris FX Corner Pin (Continuum 11 and older) (*.txt)": "BorisFXCornerPin",
+    ("Final Cut Basic Motion "
+     "[translate, rotate, scale] (*.xml)"): "FinalCutBasicMotion",
+    "Final Cut Distort [corner pin] (*.xml)": "FinalCutDistort",
+    "Flowbox corner pin (*.flowbox)": "FlowboxCornerPin",
+    "HitFilm Corner Pin [supports motion blur] (*.hfcs)": "HitFilmCornerPin",
+    ("HitFilm Transform Data "
+     "[position, scale and rotation] (*.hfcs)"): "HitFilmTransformData",
+    "Mistika Point Tracker File (*.trk)": "MistikaPointTracker",
+    "MochaBlend tracking data (*.txt)": "MochaBlend",
+    "Motion basic transform (*.motn)": "MotionBasicTransform",
+    "Motion corner pin (*.motn)": "MotionCornerPin",
+    "Nuke 7 Tracker (*.nk)": "Nuke7Tracker",
+    "Nuke Ascii (*.txt)": "NukeAscii",
+    "Nuke Corner Pin (*.nk)": "NukeCornerPin",
+    "Nuke Mesh Tracker (*.nk)": "NukeMeshTracker",
+    "Quantel Corner Pin Data (*.xml)": "QuantelCornerPin",
+    "Shake Script (*.shk)": "ShakeScript",
+    "Silhouette corner pin (*.txt)": "SilhouetteCornerPin",
+}
+
+
 """
 These dataclasses are here because they
 cannot be defined directly in pyblish plugins.
@@ -39,6 +93,7 @@ class ExporterInfo:
     id: str
     label: str
     exporter: TrackingDataExporter
+    short_name: str
 
 
 @dataclasses.dataclass
@@ -172,7 +227,9 @@ def get_tracking_exporters() -> list[ExporterInfo]:
         ExporterInfo(
             id=sha256(k.encode()).hexdigest(),
             label=k,
-            exporter=v)
+            exporter=v,
+            short_name=TRACKING_EXPORTERS_REPRESENTATION_NAME_MAPPING.get(
+                k, k))
         for k, v in sorted(
             TrackingDataExporter.registered_exporters().items())
     ]
