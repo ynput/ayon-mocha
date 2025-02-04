@@ -238,7 +238,10 @@ class ExportTrackingPoints(publish.Extractor):
                         "remove_lens_distortion", False)
                 }
             )
-
+            self.log.debug(
+                "Selected exporter: %s", exporter_name)
+            self.log.debug(
+                "Exporting to: %s", tracking_file_path)
             if not result:
                 msg = f"Export failed for {exporter_name}."
                 raise KnownPublishError(msg)
