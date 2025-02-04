@@ -18,6 +18,12 @@ DEFAULT_VALUES = {
             "default_exporters": [
                 "Nuke7Tracker",
             ]
+        },
+        "CreateShapeData": {
+            "enabled": True,
+            "default_exporters": [
+                "SilhouetteShapes",
+            ]
         }
     }
 }

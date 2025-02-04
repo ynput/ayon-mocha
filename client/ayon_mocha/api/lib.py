@@ -9,10 +9,10 @@ import tempfile
 from hashlib import sha256
 from pathlib import Path
 from shutil import copyfile
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from mocha import get_mocha_exec_name, ui
-from mocha.exporters import TrackingDataExporter
+from mocha.exporters import ShapeDataExporter, TrackingDataExporter
 from mocha.project import Clip, Project
 from qtpy.QtWidgets import QApplication
 
@@ -79,6 +79,27 @@ TRACKING_EXPORTERS_REPRESENTATION_NAME_MAPPING = {
 }
 
 
+SHAPE_EXPORTERS_REPRESENTATION_NAME_MAPPING = {
+    "Adobe After Effects Mask Data (*.shape4ae)": "AfxMask",
+    "Adobe Premiere shape data (*.xml)": "PremiereShape",
+    "BlackMagic Fusion 19+ MultiPoly shapes (*.comp)": "FusionMultiPoly",
+    "BlackMagic Fusion shapes (*.comp)": "FusionShapes",
+    "Combustion GMask Script (*.gmask)": "CombustionGMask",
+    "Flame GMask Script (*.gmask)": "FlameGMask",
+    "Flame Tracer [Basic] (*.mask)": "FlameTracerBasic",
+    "Flame Tracer [Shape + Axis] (*.mask)": "FlameTracerShapeAxis",
+    "HitFilm [Transform & Shape] (*.hfcs)": "HitFilmTransformShape",
+    "Mocha shape data for Final Cut (*.xml)": "MochaShapeFinalCut",
+    "MochaBlend shape data (*.txt)": "MochaBlend",
+    "Nuke Roto [Basic] (*.nk)": "NuRotoBasic",
+    "Nuke RotoPaint [Basic] (*.nk)": "NukeRotoPaintBasic",
+    "Nuke SplineWarp (*.nk)": "NukeSplineWarp",
+    "Nuke v6.2+ Roto [Transform & Shape] (*.nk)": "NukeRotoTransformShape",
+    "Nuke v6.2+ RotoPaint [Transform & Shape] (*.nk)": "NukeRotoPaint",
+    "Shake Rotoshape (*.ssf)": "ShapeRotoshape",
+    "Silhouette shapes (*.fxs)": "SilhouetteShapes",
+}
+
 """
 These dataclasses are here because they
 cannot be defined directly in pyblish plugins.
@@ -92,7 +113,7 @@ class ExporterInfo:
     """Exporter information."""
     id: str
     label: str
-    exporter: TrackingDataExporter
+    exporter: Union[TrackingDataExporter, ShapeDataExporter]
     short_name: str
 
 
@@ -113,6 +134,7 @@ def get_main_window() -> QtWidgets.QWidget:
         QWidget: Main window of the application.
     """
     return ui.get_widgets()["MainWindow"]
+
 
 def update_ui() -> None:
     """Update the UI."""
@@ -232,4 +254,18 @@ def get_tracking_exporters() -> list[ExporterInfo]:
                 k, k))
         for k, v in sorted(
             TrackingDataExporter.registered_exporters().items())
+    ]
+
+
+def get_shape_exporters() -> list[ExporterInfo]:
+    """Return all registered shape exporters as a list."""
+    return [
+        ExporterInfo(
+            id=sha256(k.encode()).hexdigest(),
+            label=k,
+            exporter=v,
+            short_name=SHAPE_EXPORTERS_REPRESENTATION_NAME_MAPPING.get(k, k)
+        )
+        for k, v in sorted(
+            ShapeDataExporter.registered_exporters().items())
     ]
