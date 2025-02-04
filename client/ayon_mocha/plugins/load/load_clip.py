@@ -74,7 +74,6 @@ class LoadClip(MochaLoader):
         del clip
         host.remove_container(Container(**container))
 
-
     def update(self, container: dict, context: dict) -> None:
         """Update a container."""
         host: MochaProHost = registered_host()
