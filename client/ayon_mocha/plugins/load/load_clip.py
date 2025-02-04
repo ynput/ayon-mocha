@@ -61,7 +61,6 @@ class LoadClip(MochaLoader):
         """Switch the image sequence on the current camera."""
         self.update(container, context)
 
-
     def remove(self, container: dict) -> None:
         """Remove a container."""
         host: MochaProHost = registered_host()
@@ -74,7 +73,6 @@ class LoadClip(MochaLoader):
             return
         del clip
         host.remove_container(Container(**container))
-
 
     def update(self, container: dict, context: dict) -> None:
         """Update a container."""
