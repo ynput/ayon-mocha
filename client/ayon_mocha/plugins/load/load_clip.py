@@ -38,9 +38,23 @@ class LoadClip(MochaLoader):
         project = host.get_current_project()
         with project.undo_group():
             file_path = self.filepath_from_context(context)
+
+            # Check if the clip with the same name already exists
+            # Mocha will load clips with the same name, but it will
+            # show in the UI just one of them, and it makes things
+            # confusing for the user.
+            clips = project.get_clips()
+            if name in clips:
+                self.log.warning("Clip %s already exists", name)
+                idx = 1
+                while f"{name}_{idx}" in clips:
+                    idx += 1
+                name = f"{name}_{idx}"
+
             clip = Clip(file_path, name)
             project.add_clip(clip, name)
             project.new_output_clip(clip, name)
+
             container = Container(
                 name=name,
                 namespace=namespace or "",
