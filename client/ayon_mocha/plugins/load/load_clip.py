@@ -64,10 +64,6 @@ class LoadClip(MochaLoader):
                 timestamp=time.time_ns()
             )
             host.add_container(container)
-            # This should show the clip in the UI, but it doesn't work
-            # (mocha.ui.set_displayed_clip(clip))
-            # https://borisfx.com/documentation/mocha/12.0.0/python-guide/#_obtaining_the_current_clip
-            # set_displayed_clip(clip)
             update_ui()
             self.log.debug("Loaded clip: %s", clip)
 
