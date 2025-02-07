@@ -8,9 +8,10 @@ from typing import TYPE_CHECKING, ClassVar, List, Optional
 import clique
 from ayon_core.pipeline import KnownPublishError, publish
 from ayon_mocha.api.lib import (
-    SHAPE_EXPORTERS_REPRESENTATION_NAME_MAPPING,
     ExporterProcessInfo,
+    get_mocha_version,
 )
+from ayon_mocha.api.mocha_exporter_mappings import EXPORTER_MAPPING
 from mocha.project import Layer, Project, View
 
 if TYPE_CHECKING:
@@ -122,7 +123,7 @@ class ExportShape(publish.Extractor):
                     })
             if cols and not rems:
                 # if there are only sequences
-                if cols > 1:
+                if len(cols) > 1:
                     # the extractor produced multiple sequences
                     # and single files. This is not supported now
                     # due to the complexity.
@@ -199,14 +200,16 @@ class ExportShape(publish.Extractor):
                        f"from {exporter_info.label} exporter.")
                 raise KnownPublishError(msg)
 
+            """"
             ext = self._get_extension(exporter_info)
             if not ext:
                 msg = ("Cannot get extension "
                        f"from {exporter_info.label} exporter.")
                 raise KnownPublishError(msg)
+            """
 
             exporter_short_hash = exporter_info.id[:8]
-            file_name = f"{product_name}_{exporter_short_hash}.{ext}"
+            file_name = f"{product_name}_{exporter_short_hash}"
 
             tracking_file_path = (
                     process_info.staging_dir / file_name
@@ -226,10 +229,14 @@ class ExportShape(publish.Extractor):
                 raise KnownPublishError(msg)
 
             output_files = []
+            ext = None
             for k, v in result.items():
                 with open(k, "wb") as file:
                     file.write(v)
                 output_files.append(Path(k).name)
+
+                if ext is None:
+                    ext = Path(k).suffix[1:]
 
             output.append({
                 "name": exporter_info.label,
@@ -260,5 +267,11 @@ class ExportShape(publish.Extractor):
     def _exporter_name_to_representation_name(
             self, exporter_name: str) -> str:
         """Convert the exporter name to representation name."""
-        return SHAPE_EXPORTERS_REPRESENTATION_NAME_MAPPING.get(
+        version = get_mocha_version() or "2024"
+        try:
+            mapping = EXPORTER_MAPPING["shape"][version]
+        except KeyError:
+            mapping = EXPORTER_MAPPING["shape"]["2024.5"]
+
+        return mapping.get(
             exporter_name, exporter_name)

@@ -4,7 +4,7 @@ from __future__ import annotations
 from ayon_server.settings import BaseSettingsModel, SettingsField
 
 
-def tracking_exporter_enum() -> list[dict[str, str]]:
+def tracking_exporter_enum_2024_5() -> list[dict[str, str]]:
     """Return enum for tracking exporters."""
     return [
         {
@@ -120,7 +120,149 @@ def tracking_exporter_enum() -> list[dict[str, str]]:
     ]
 
 
-def shapes_exporter_enum() -> list[dict[str, str]]:
+def tracking_exporter_enum_2025() -> list[dict[str, str]]:
+    """Return enum for tracking exporters."""
+    return [
+        {
+            "label": "After Effects CC Power Pin",
+            "value": "AfxCCPowerPin",
+        },
+        {
+            "label": "After Effects CS3 Corner Pin",
+            "value": "AfxCS3CornerPin",
+        },
+        {
+            "label": "After Effects Corner Pin",
+            "value": "AfxCornerPin",
+        },
+        {
+            "label": "After Effects Corner Pin with Motion Blur",
+            "value": "AfxCornerPinMotionBlur",
+        },
+        {
+            "label": "After Effects Transform Data",
+            "value": "AfxTransformData",
+        },
+        {
+            "label": "Alembic 2D Mesh Data",
+            "value": "AlembicMeshData",
+        },
+        {
+            "label": "Alembic 2D Vertex Transform",
+            "value": "AlembicVertexTransform",
+        },
+        {
+            "label": "Avid DS Tracking Data",
+            "value": "AvidDSTrackingData",
+        },
+        {
+            "label": "Continuum Center Point - 11.0.0",
+            "value": "BorisFXCenterPoint",
+        },
+        {
+            "label": "Continuum Corner Pin - 11.0.0",
+            "value": "BorisFXCornerPin",
+        },
+        {
+            "label": "Final Cut Basic Motion - 7.0.0",
+            "value": "FinalCutBasicMotion",
+        },
+        {
+            "label": "Final Cut Distort - 7.0.0",
+            "value": "FinalCutDistort",
+        },
+        {
+            "label": "Flame Axis",
+            "value": "FlameAxis",
+        },
+        {
+            "label": "Flame Point Stabilizer Data - 2014.0.0",
+            "value": "Flame2014Stabilize",
+        },
+        {
+            "label": "Flame Point Tracker Data",
+            "value": "IFFFSEPointTracker",
+        },
+        {
+            "label": "Flame Point Tracker Data - 2014.0.0",
+            "value": "Flame2014PointTracker",
+        },
+        {
+            "label": "Flame Stabilizer Data",
+            "value": "IFFFSEStabilizer",
+        },
+        {
+            "label": "Flowbox Corner Pin",
+            "value": "FlowboxCornerPin",
+        },
+        {
+            "label": "Fusion Tracker Data",
+            "value": "FusionCompData",
+        },
+        {
+            "label": "HitFilm Corner Pin with Motion Blur",
+            "value": "HitFilmCornerPin",
+        },
+        {
+            "label": "HitFilm Transform Data",
+            "value": "HitFilmTransformData",
+        },
+        {
+            "label": "Mistika Point Tracker File",
+            "value": "MistikaPointTracker",
+        },
+        {
+            "label": "MochaBlend Tracking Data",
+            "value": "MochaBlend",
+        },
+        {
+            "label": "Motion Basic Transform Data",
+            "value": "MotionBasicTransform",
+        },
+        {
+            "label": "Motion Corner Pin",
+            "value": "MotionCornerPin",
+        },
+        {
+            "label": "Nuke Ascii",
+            "value": "NukeAscii",
+        },
+        {
+            "label": "Nuke Corner Pin",
+            "value": "NukeCornerPin",
+        },
+        {
+            "label": "Nuke PowerMesh to Tracker Data",
+            "value": "NukePowerMesh",
+        },
+        {
+            "label": "Nuke Tracker Data - 7.0+",
+            "value": "Nuke7Tracker",
+        },
+        {
+            "label": "Quantel Corner Pin Data",
+            "value": "QuantelCornerPin",
+        },
+        {
+            "label": "SCRATCH Corner Pin Data",
+            "value": "AssimilateSCRATCHCornerPin",
+        },
+        {
+            "label": "Shake Tracking Data",
+            "value": "ShakeScript",
+        },
+        {
+            "label": "Silhouette Corner Pin",
+            "value": "SilhouetteCornerPin",
+        },
+        {
+            "label": "SynthEyes 2D Tracker Data",
+            "value": "SynthEyes2DTracker",
+        },
+    ]
+
+
+def shapes_exporter_enum_2024_5() -> list[dict[str, str]]:
     """Return enum for shape exporters."""
     return [
         {
@@ -180,22 +322,134 @@ def shapes_exporter_enum() -> list[dict[str, str]]:
     ]
 
 
+def shapes_exporter_enum_2025() -> list[dict[str, str]]:
+    """Return enum for shape exporters form Mocha Pro 2025."""
+    return [
+        {
+            "label": "After Effects Mask Data",
+            "value": "AfxMask",
+        },
+        {
+            "label": "Combustion GMask Script",
+            "value": "CombustionGMask",
+        },
+        {
+            "label": "Final Cut Mocha Shape Data - 7.0.0",
+            "value": "FinalCutMochaShape",
+        },
+        {
+            "label": "Flame Gmask Script",
+            "value": "FlameGMask",
+        },
+        {
+            "label": "Flame Tracer [Basic]",
+            "value": "FlameTracerBasic",
+        },
+        {
+            "label": "Flame Tracer [Shape & Axis]",
+            "value": "FlameTracerShapeAxis",
+        },
+        {
+            "label": "Fusion MultiPoly Shape Data",
+            "value": "FusionMultiPoly",
+        },
+        {
+            "label": "Fusion Poly Shape Data",
+            "value": "FusionShapes",
+        },
+        {
+            "label": "HitFilm Mask Data",
+            "value": "HitFilmTransformShape",
+        },
+        {
+            "label": "MochaBlend Shape Data",
+            "value": "MochaBlend",
+        },
+        {
+            "label": "Nuke Roto [Basic]",
+            "value": "NukeRotoBasic",
+        },
+        {
+            "label": "Nuke Roto [Transform & Shape]-6.2+",
+            "value": "NukeRotoTransformShape",
+        },
+        {
+            "label": "Nuke RotoPaint [Basic]",
+            "value": "NukeRotoPaintBasic",
+        },
+        {
+            "label": "Nuke RotoPaint [Transform & Shape] - 6.2+",
+            "value": "NukeRotoPaint",
+        },
+        {
+            "label": "Nuke SplineWarp",
+            "value": "NukeSplineWarp",
+        },
+        {
+            "label": "Premiere Shape Data",
+            "value": "PremiereShape",
+        },
+        {
+            "label": "Shake RotoShape",
+            "value": "ShapeRotoshape",
+        },
+        {
+            "label": "Silhouette Shape Data",
+            "value": "SilhouetteShapes",
+        },
+    ]
+
+
+class Mocha2024TrackingModel(BaseSettingsModel):
+    """Mocha Pro 2024 tracking settings."""
+    default_exporters: list[str] = SettingsField(
+        default_factory=list, title="Default exporters",
+        enum_resolver=tracking_exporter_enum_2024_5)
+
+
+class Mocha2025TrackingModel(BaseSettingsModel):
+    """Mocha Pro 2025 tracking settings."""
+    default_exporters: list[str] = SettingsField(
+        default_factory=list, title="Default exporters",
+        enum_resolver=tracking_exporter_enum_2025)
+
+
 class CreateTrackingPointsModel(BaseSettingsModel):
     """Settings for creating tracking points."""
     enabled: bool = SettingsField(
         default=True, title="Enabled")
+    mocha_2024_5: Mocha2024TrackingModel = SettingsField(
+        default_factory=Mocha2024TrackingModel,
+        title="Mocha Pro 2024")
+    mocha_2025: Mocha2025TrackingModel = SettingsField(
+        default_factory=Mocha2025TrackingModel,
+        title="Mocha Pro 2025")
+
+
+class Mocha2024ShapeModel(BaseSettingsModel):
+    """Mocha Pro 2024 shape settings."""
     default_exporters: list[str] = SettingsField(
         default_factory=list, title="Default exporters",
-        enum_resolver=tracking_exporter_enum)
+        enum_resolver=shapes_exporter_enum_2024_5)
+
+
+class Mocha2025ShapeModel(BaseSettingsModel):
+    """Mocha Pro 2025 shape settings."""
+    default_exporters: list[str] = SettingsField(
+        default_factory=list, title="Default exporters",
+        enum_resolver=shapes_exporter_enum_2025)
 
 
 class CreateShapeDataModel(BaseSettingsModel):
     """Settings for creating shapes."""
     enabled: bool = SettingsField(
         default=True, title="Enabled")
-    default_exporters: list[str] = SettingsField(
-        default_factory=list, title="Default exporters",
-        enum_resolver=shapes_exporter_enum)
+    mocha_2024_5: Mocha2024ShapeModel = SettingsField(
+        default_factory=Mocha2024ShapeModel,
+        title="Mocha Pro 2024")
+    mocha_2025: Mocha2025ShapeModel = SettingsField(
+        default_factory=Mocha2025ShapeModel,
+        title="Mocha Pro 2025")
 
 
 class MochaProCreatorPlugins(BaseSettingsModel):

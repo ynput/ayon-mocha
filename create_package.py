@@ -51,7 +51,7 @@ PRIVATE_ROOT: str = os.path.join(CURRENT_ROOT, "private")
 PUBLIC_ROOT: str = os.path.join(CURRENT_ROOT, "public")
 CLIENT_ROOT: str = os.path.join(CURRENT_ROOT, "client")
 
-VERSION_PY_CONTENT = f'''# -*- coding: utf-8 -*-
+VERSION_PY_CONTENT = f'''
 """Package declaring AYON addon '{ADDON_NAME}' version."""
 __version__ = "{ADDON_VERSION}"
 '''

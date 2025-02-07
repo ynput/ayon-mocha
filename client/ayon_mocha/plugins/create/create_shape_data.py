@@ -8,7 +8,7 @@ from ayon_core.lib import (
     UILabelDef,
     UISeparatorDef,
 )
-from ayon_mocha.api.lib import get_shape_exporters
+from ayon_mocha.api.lib import get_mocha_version, get_shape_exporters
 from ayon_mocha.api.plugin import MochaCreator
 
 if TYPE_CHECKING:
@@ -27,10 +27,24 @@ class CreateShapeData(MochaCreator):
         """Get attribute definitions for instance."""
         exporter_items = {ex.id: ex.label for ex in get_shape_exporters()}
 
+        version = get_mocha_version()
         settings = (
             self.project_settings
             ["mocha"]["create"]["CreateShapeData"]
         )
+
+        try:
+            exporter_settings =  (
+                settings
+                [f"mocha_{version}"]
+                ["default_exporters"]
+            )
+        except KeyError:
+            exporter_settings = (
+                settings
+                ["mocha_2024_5"]
+                ["default_exporters"]
+            )
 
         exporters = get_shape_exporters()
         exporter_items = {ex.id: ex.label for ex in exporters}
@@ -38,7 +52,7 @@ class CreateShapeData(MochaCreator):
         preselect_exporters = [
             ex.id
             for ex in exporters
-            if ex.short_name in settings["default_exporters"]
+            if ex.short_name in exporter_settings
         ]
 
         layers = {

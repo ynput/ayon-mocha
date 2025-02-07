@@ -10,7 +10,7 @@ from ayon_core.lib import (
     UILabelDef,
     UISeparatorDef,
 )
-from ayon_mocha.api.lib import get_tracking_exporters
+from ayon_mocha.api.lib import get_mocha_version, get_tracking_exporters
 from ayon_mocha.api.plugin import MochaCreator
 
 if TYPE_CHECKING:
@@ -29,9 +29,23 @@ class CreateTrackingPoints(MochaCreator):
 
     def get_attr_defs_for_instance(self, instance: CreatedInstance) -> list:
         """Get attribute definitions for instance."""
+        version = get_mocha_version()
         settings = (
             self.project_settings
                 ["mocha"]["create"]["CreateTrackingPoints"]
+        )
+
+        try:
+            exporter_settings = (
+                settings
+                [f"mocha_{version}"]
+                ["default_exporters"]
+            )
+        except KeyError:
+            exporter_settings = (
+                settings
+                ["mocha_2024_5"]
+                ["default_exporters"]
             )
 
         exporters = get_tracking_exporters()
@@ -40,7 +54,7 @@ class CreateTrackingPoints(MochaCreator):
         preselect_exporters =  [
             ex.id
             for ex in exporters
-            if ex.short_name in settings["default_exporters"]
+            if ex.short_name in exporter_settings
         ]
 
         layers = {
