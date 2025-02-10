@@ -185,8 +185,7 @@ class ExportTrackingPoints(publish.Extractor):
         file_name = f"{repre_name}.manifest"
         manifest_file = staging_dir / file_name
         with open(manifest_file, "w", encoding="utf-8") as file:
-            for file_path in files:
-                file.write(f"{file_path}\n")
+            file.writelines(files)
         return file_name
 
     def export(
