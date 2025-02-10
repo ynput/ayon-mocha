@@ -29,8 +29,6 @@ https://github.com/ynput/ayon-mocha
 $CurrentDir = Get-Location
 $ScriptDir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
 $RepoRoot = (Get-Item $ScriptDir).parent.FullName
-& git submodule update --init --recursive
-$env:PSModulePath = $env:PSModulePath + ";$($openpype_root)\tools\modules\powershell"
 
 $FunctionName=$ARGS[0]
 $Arguments=@()
