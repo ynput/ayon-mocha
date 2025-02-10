@@ -40,6 +40,8 @@ indent-width = 4
 
 [lint]
 select = ["ALL"]
+preview = true
+
 ignore = [
     "PTH",
     "ANN204",
@@ -47,11 +49,14 @@ ignore = [
     "S603",
     "ERA001",
     "TRY003",
-    "UP006",  # support for older python version (type vs. Type)
-    "UP007",  # ..^
-    "UP035",  # ..
+    "UP006",   # support for older python version (type vs. Type)
+    "UP007",   # ..^
+    "UP035",   # ..
     "ARG002",
-    "INP001"  # add `__init__.py` to namespaced package
+    "INP001",  # add `__init__.py` to namespaced package
+    "S404",    # subprocess module is possibly insecure
+    "PLC0415", # import must be on top of the file
+    "CPY001",  # missing copyright header
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.

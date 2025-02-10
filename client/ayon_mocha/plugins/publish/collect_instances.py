@@ -8,6 +8,7 @@ import pyblish.api
 if TYPE_CHECKING:
     from logging import Logger
 
+
 class CollectInstances(pyblish.api.InstancePlugin):
     """Collect instances for publishing."""
     label = "Collect Instances"

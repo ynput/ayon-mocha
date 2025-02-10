@@ -19,11 +19,12 @@ class MochaAddon(AYONAddon, IHostAddon):
     title = "Mocha Pro"
     version = __version__
 
-    def add_implementation_envs(self, env: dict[str, str], _app: Any) -> None:  # noqa: ANN401
+    @staticmethod
+    def add_implementation_envs(env: dict[str, str], _app: Any) -> None:  # noqa: ANN401
         """Add implementation environment variables."""
         startup_path = os.path.join(MOCHA_ADDON_ROOT, "startup")
         env["MOCHA_INIT_SCRIPT"] = startup_path
 
-    def get_workfile_extensions(self) -> list[str]:
+    def get_workfile_extensions(self) -> list[str]:  # noqa: PLR6301
         """Return supported workfile extensions."""
         return [".mocha"]

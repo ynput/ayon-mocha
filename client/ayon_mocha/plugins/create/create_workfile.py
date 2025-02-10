@@ -14,7 +14,12 @@ class CreateWorkfile(MochaCreator, AutoCreator):
     default_variant = "Main"
 
     def create(self) -> CreatedInstance:
-        """Create workfile instance."""
+        """Create workfile instance.
+
+        Returns:
+            CreatedInstance: Created workfile instance.
+
+        """
         variant = self.default_variant
         current_instance = next(
             (

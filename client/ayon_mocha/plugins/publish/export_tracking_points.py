@@ -32,7 +32,6 @@ class ExportTrackingPoints(publish.Extractor):
     families: ClassVar[list[str]] = ["trackpoints"]
     log: Logger
 
-
     def process(self, instance: pyblish.api.Instance) -> None:
         """Process the instance."""
         dir_path = Path(self.staging_dir(instance))
@@ -71,11 +70,25 @@ class ExportTrackingPoints(publish.Extractor):
 
         self.log.debug(instance.data["representations"])
 
-
     def process_outputs_to_representations(
             self, outputs: list[dict],
             instance: pyblish.api.Instance) -> list[dict]:
-        """Process the output to representations."""
+        """Process the output to representations.
+
+        This will process output from the exporters to representations.
+
+        Args:
+            outputs (list[dict]): list of outputs.
+            instance (pyblish.api.Instance): instance.
+
+        Returns:
+            list[dict]: list of representations.
+
+        Raises:
+            KnownPublishError: if the exporter produced multiple
+                sequences and single files.
+
+        """
         representations = []
         staging_dir = Path(self.staging_dir(instance))
 
@@ -165,10 +178,13 @@ class ExportTrackingPoints(publish.Extractor):
             files (list[str]): list of files.
             repre_name (str): representation name.
 
+        Returns:
+            str: manifest file name.
+
         """
         file_name = f"{repre_name}.manifest"
         manifest_file = staging_dir / file_name
-        with open(manifest_file, "w") as file:
+        with open(manifest_file, "w", encoding="utf-8") as file:
             for file_path in files:
                 file.write(f"{file_path}\n")
         return file_name
@@ -194,6 +210,12 @@ class ExportTrackingPoints(publish.Extractor):
             exporters (list[ExporterInfo]): exporters to use.
             layer (Layer): layer to export.
             process_info (ExporterProcessInfo): process information.
+
+        Returns:
+            list[dict]: list of representations.
+
+        Raises:
+            KnownPublishError: if the export fails.
 
         """
         views = [view_info.name for view_info in project.views]
@@ -253,8 +275,7 @@ class ExportTrackingPoints(publish.Extractor):
 
             ext = None
             for k, v in result.items():
-                with open(k, "wb") as file:
-                    file.write(v)
+                Path(k).write_bytes(v)
                 output_files.append(Path(k).name)
                 if ext is None:
                     ext = Path(k).suffix[1:]
@@ -276,15 +297,25 @@ class ExportTrackingPoints(publish.Extractor):
 
         publish_dir_path = Path(instance.data["publishDir"])
         instance.data["transfers"].append(
-            [path.as_posix(),  (publish_dir_path / path.name).as_posix()])
-
+            [path.as_posix(), (publish_dir_path / path.name).as_posix()])
 
     def external_export_process(self,
         instance_name: str,
         exporters: list[ExporterInfo],
         layer: Layer,
         process_info: ExporterProcessInfo) -> list[dict]:
-        """Process the instance."""
+        """Process the instance using external export.
+
+        This will prepare the arguments and run the external mocha exporter
+        script to export the tracking data.
+
+        Returns:
+            list[dict]: list of representations.
+
+        Raises:
+            KnownPublishError: if the export fails.
+
+        """
         invert: bool = process_info.options.get(
             "invert", False)
         remove_lens_distortion: bool = process_info.options.get(
@@ -333,7 +364,7 @@ class ExportTrackingPoints(publish.Extractor):
             ]
 
             self.log.info("Exporting: %s", list2cmdline(args))
-            run_subprocess(list2cmdline(args) ,logger=self.log)
+            run_subprocess(list2cmdline(args), logger=self.log)
 
             filename = f"{instance_name}.{ext}"
             path = process_info.staging_dir / filename
@@ -354,13 +385,31 @@ class ExportTrackingPoints(publish.Extractor):
 
     @staticmethod
     def _get_extension(exporter_info: ExporterInfo) -> Optional[str]:
-        """Get the extension of the exporter."""
+        """Get the extension of the exporter.
+
+        This is used only if the exporter name contains the extension.
+        From Mocha 2025 the extension is not part of the exporter name
+        anymore.
+
+        Returns:
+            Optional[str]: extension of the exporter if detected.
+
+        """
         match = re.search(EXTENSION_PATTERN, exporter_info.label)
         return match["ext"] if match else None
 
+    @staticmethod
     def _exporter_name_to_representation_name(
-            self, exporter_name: str) -> str:
-        """Convert the exporter name to representation name."""
+            exporter_name: str) -> str:
+        """Convert the exporter name to representation name.
+
+        Args:
+            exporter_name (str): exporter name.
+
+        Returns:
+            str: exporter representation name.
+
+        """
         version = get_mocha_version() or "2024"
         try:
             mapping = EXPORTER_MAPPING["tracking"][version]

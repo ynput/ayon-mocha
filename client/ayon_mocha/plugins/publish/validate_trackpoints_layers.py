@@ -11,7 +11,6 @@ if TYPE_CHECKING:
     from logging import Logger
 
 
-
 class ValidateTrackpointLayers(pyblish.api.Validator):
     """Validate layer names in trackpoints."""
 
@@ -22,7 +21,12 @@ class ValidateTrackpointLayers(pyblish.api.Validator):
     log: Logger
 
     def process(self, instance: pyblish.api.Instance) -> None:
-        """Process all the trackpoints."""
+        """Process all the trackpoints.
+
+        Raises:
+            PublishValidationError: If the layer index is not found.
+
+        """
         if not instance.data.get("layer"):
             msg = (
                 f"Specified layer index ({instance.data['layer']} "

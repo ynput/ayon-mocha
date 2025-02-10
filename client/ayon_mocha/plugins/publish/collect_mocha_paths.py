@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
     from mocha.project import Project
 
+
 class CollectMochaPaths(pyblish.api.ContextPlugin):
     """Collect Mocha Pro project."""
     order = pyblish.api.CollectorOrder - 0.45

@@ -43,7 +43,7 @@ def save_file(filepath: Optional[Path]) -> None:
     project.save()
 
 
-def open_file(filepath:Path) -> None:
+def open_file(filepath: Path) -> None:
     """Open a workfile.
 
     There is probably no way to open a workfile in Mocha Pro directly,

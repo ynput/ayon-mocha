@@ -21,7 +21,12 @@ class ValidateLayersAndExporters(pyblish.api.InstancePlugin):
     log: Logger
 
     def process(self, instance: pyblish.api.Instance) -> None:
-        """Process all the trackpoints."""
+        """Process all the trackpoints.
+
+        Raises:
+            PublishValidationError: If no layers or exporters are set.
+
+        """
         self.log.debug("Validating layers and exporters")
         if not instance.data.get("layer"):
             msg = (

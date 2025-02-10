@@ -1,4 +1,10 @@
-"""Mocha Pro AYON pipeline API."""
+"""Mocha Pro AYON pipeline API.
+
+Notes:
+    PLR6301 (can be static method, class method or function) is used there
+    because the parent class `IWorkfileHost` has different signatures.
+
+"""
 from __future__ import annotations
 
 import dataclasses
@@ -41,7 +47,7 @@ log = logging.getLogger("ayon_mocha")
 HOST_DIR = Path(__file__).resolve().parent.parent
 PLUGINS_DIR = HOST_DIR / "plugins"
 PUBLISH_PATH = PLUGINS_DIR / "publish"
-LOAD_PATH =  PLUGINS_DIR / "load"
+LOAD_PATH = PLUGINS_DIR / "load"
 CREATE_PATH = PLUGINS_DIR / "create"
 INVENTORY_PATH = PLUGINS_DIR / "inventory"
 STARTUP_PATH = PLUGINS_DIR / "startup"
@@ -57,17 +63,25 @@ MOCHA_INSTANCES_KEY = "publish_instances"
 MOCHA_CONTAINERS_KEY = "containers"
 
 
-
 class AYONJSONEncoder(json.JSONEncoder):
     """Custom JSON encoder for dataclasses."""
 
     def default(self, obj: object) -> Union[dict, object]:
-        """Encode dataclasses as dict."""
+        """Encode dataclasses as dict.
+
+        Args:
+            obj (object): Object to encode.
+
+        Returns:
+            Union[dict, object]: Encoded object.
+
+        """
         if dataclasses.is_dataclass(obj):
-            return dataclasses.asdict(obj) # type: ignore[arg-type]
+            return dataclasses.asdict(obj)  # type: ignore[arg-type]
         if isinstance(obj, CreatedInstance):
             return dict(obj)
         return super().default(obj)
+
 
 @dataclasses.dataclass
 class Container:
@@ -96,8 +110,7 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         register_loader_plugin_path(LOAD_PATH.as_posix())
         register_creator_plugin_path(CREATE_PATH.as_posix())
 
-
-        #QtCore.QTimer.singleShot(0, self._install_menu)
+        # QtCore.QTimer.singleShot(0, self._install_menu)
         self._install_menu()
 
     def _install_menu(self) -> None:
@@ -161,11 +174,16 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
             lambda: host_tools.show_experimental_tools_dialog(
                 parent=main_window))
 
-    def get_workfile_extensions(self) -> list[str]:
-        """Get the workfile extensions."""
+    def get_workfile_extensions(self) -> list[str]:  # noqa: PLR6301
+        """Get the workfile extensions.
+
+        Returns:
+            list[str]: Workfile extensions.
+
+        """
         return file_extensions()
 
-    def save_workfile(self, dst_path: Optional[str]=None) -> None:
+    def save_workfile(self, dst_path: Optional[str] = None) -> None:  # noqa: PLR6301
         """Save the workfile.
 
         Args:
@@ -184,22 +202,32 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         if not _get_current_project():
             reset_frame_range(_get_current_project())
 
-    def open_workfile(self, filepath: str) -> None:
+    def open_workfile(self, filepath: str) -> None:  # noqa: PLR6301
         """Open the workfile."""
         open_file(Path(filepath))
 
-    def get_current_workfile(self) -> Optional[str]:
-        """Get the current workfile."""
+    def get_current_workfile(self) -> Optional[str]:  # noqa: PLR6301
+        """Get the current workfile.
+
+        Returns:
+            Optional[str]: The current workfile.
+
+        """
         file_path = current_file()
         return file_path.as_posix() if file_path else None
 
     def get_containers(self) -> Generator[dict, None, list]:
-        """Get containers from the current workfile."""
+        """Get containers from the current workfile.
+
+        Yields:
+            Generator: Container data.
+
+        """
         # sourcery skip: use-named-expression
         data = self.get_ayon_data()
         if data:
             yield from data.get(MOCHA_CONTAINERS_KEY, [])
-        return []
+        yield {}
 
     def add_container(self, container: Container) -> None:
         """Add a container to the current workfile.
@@ -252,7 +280,6 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
             dataclasses.asdict(_container) for _container in containers]
 
         self.update_ayon_data(data)
-
 
     def _create_ayon_data(self) -> None:
         """Create AYON data in the current project."""
@@ -316,20 +343,23 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         update_ui()
 
     def get_context_data(self) -> dict:
-        """Get context data from the current project."""
+        """Get context data from the current project.
+
+        Returns:
+            dict: Context data.
+
+        """
         data = self.get_ayon_data()
 
         return data.get(MOCHA_CONTEXT_KEY, {})
 
-    def update_context_data(self, data: dict, changes: dict) -> None:
+    def update_context_data(
+            self, data: dict, changes: dict) -> None:
         """Update context data in the current project.
 
         Args:
             data (dict): Context data.
             changes (dict): Changes to the context data.
-
-        Raises:
-            RuntimeError: If the context data is not found.
 
         """
         if not data:
@@ -339,7 +369,12 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         self.update_ayon_data(ayon_data)
 
     def get_publish_instances(self) -> list[dict]:
-        """Get publish instances from the current project."""
+        """Get publish instances from the current project.
+
+        Returns:
+            list[dict]: Publish instances.
+
+        """
         data = self.get_ayon_data()
         return data.get(MOCHA_INSTANCES_KEY, [])
 

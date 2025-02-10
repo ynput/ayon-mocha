@@ -24,7 +24,6 @@ class CollectTrackpoints(pyblish.api.InstancePlugin):
     families: ClassVar[list[str]] = ["trackpoints"]
     log: Logger
 
-
     @staticmethod
     def new_product_name(
         create_context: CreateContext,
@@ -45,7 +44,12 @@ class CollectTrackpoints(pyblish.api.InstancePlugin):
         )
 
     def process(self, instance: pyblish.api.Instance) -> None:
-        """Process the instance."""
+        """Process the instance.
+
+        Raises:
+            KnownPublishError: If the layer mode is invalid.
+
+        """
         # copy creator settings to the instance itself
         creator_attrs = instance.data["creator_attributes"]
         registered_exporters = get_tracking_exporters()
@@ -100,9 +104,9 @@ class CollectTrackpoints(pyblish.api.InstancePlugin):
 
         instance.context.remove(instance)
 
-
+    @staticmethod
     def set_layer_data_on_instance(
-            self, instance: pyblish.api.Instance, layer: Layer) -> None:
+            instance: pyblish.api.Instance, layer: Layer) -> None:
         """Set data on instance."""
         instance.data["layer"] = layer
         instance.data["frameStart"] = layer.in_point()

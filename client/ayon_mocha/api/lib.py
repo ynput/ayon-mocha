@@ -34,6 +34,8 @@ with dataclass checking for __module__ in class and
 that one is missing in discovered pyblish
 plugin classes.
 """
+
+
 @dataclasses.dataclass
 class ExporterInfo:
     """Exporter information."""
@@ -68,8 +70,8 @@ def update_ui() -> None:
 
 
 def run_mocha(
-        app: str="mochapro",
-        footage_path: str="",
+        app: str = "mochapro",
+        footage_path: str = "",
         **kwargs: dict[str, Any]) -> None:
     """Run Mocha application with given command-line arguments.
 
@@ -95,6 +97,10 @@ def run_mocha(
         frame_rate => --frame-rate
         par => --par
         interlace_mode => --interlace-mode
+
+    Raises:
+        ValueError: If unknown keyword argument is passed.
+
     """
     import os
     mocha_path = get_mocha_exec_name(app)
@@ -116,7 +122,6 @@ def run_mocha(
             ", ".join(current_keys - available_keys)
         )
         raise ValueError(msg)
-
 
     cmd_args: list[str] = []
     for key, value in kwargs.items():
@@ -147,8 +152,16 @@ def quit_mocha() -> None:
     QApplication.instance().quit()
 
 
-def copy_placeholder_clip(destination:Path) -> Path:
-    """Copy placeholder clip to the destination."""
+def copy_placeholder_clip(destination: Path) -> Path:
+    """Copy placeholder clip to the destination.
+
+    Args:
+        destination (Path): Destination directory.
+
+    Returns:
+        Path: Path to the copied clip.
+
+    """
     clip_path = destination / "empty.exr"
     copyfile(
         Path(MOCHA_ADDON_ROOT) / "resources" / "empty.exr",
@@ -159,7 +172,15 @@ def copy_placeholder_clip(destination:Path) -> Path:
 
 def create_empty_project(
         project_path: Optional[Path] = None) -> Project:
-    """Create an empty project."""
+    """Create an empty project.
+
+    Args:
+        project_path (Path, optional): Project path. Defaults to None.
+
+    Returns:
+        Project: Project instance.
+
+    """
     if not project_path:
         project_path = Path(tempfile.NamedTemporaryFile(  # noqa: SIM115
             suffix=".mocha", delete=False).name)
@@ -208,8 +229,16 @@ def get_shape_exporters() -> list[ExporterInfo]:
     ]
 
 
-def sanitize_unknown_exporter_name(name:str) -> str:
-    """Sanitize unknown exporter name."""
+def sanitize_unknown_exporter_name(name: str) -> str:
+    """Sanitize unknown exporter name.
+
+    Args:
+        name (str): Exporter name.
+
+    Returns:
+        str: Sanitized exporter name
+
+    """
     return re.sub(r"[^a-zA-Z0-9]", "_", name)
 
 

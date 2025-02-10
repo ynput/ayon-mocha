@@ -23,8 +23,14 @@ class CreateShapeData(MochaCreator):
     product_type = "matteshapes"
     icon = "circle"
 
-    def get_attr_defs_for_instance(self, instance: CreatedInstance) -> list:
-        """Get attribute definitions for instance."""
+    def get_attr_defs_for_instance(
+            self, instance: CreatedInstance) -> list:
+        """Get attribute definitions for instance.
+
+        Returns:
+            list: List of attribute definitions.
+
+        """
         exporter_items = {ex.id: ex.label for ex in get_shape_exporters()}
 
         version = get_mocha_version()
@@ -34,7 +40,7 @@ class CreateShapeData(MochaCreator):
         )
 
         try:
-            exporter_settings =  (
+            exporter_settings = (
                 settings
                 [f"mocha_{version}"]
                 ["default_exporters"]

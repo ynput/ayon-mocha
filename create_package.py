@@ -33,6 +33,7 @@ import shutil
 import subprocess
 import sys
 import zipfile
+from pathlib import Path
 from typing import Iterable, List, Optional, Pattern, Tuple, Union
 
 import package
@@ -99,6 +100,9 @@ class ZipFileLongPaths(zipfile.ZipFile):
             member (ZipInfo): ZipInfo instance.
             tpath (str): Target path.
             pwd (bytes): Password for decryption.
+
+        Returns:
+            str: Path to extracted file.
 
         """
         if self._is_windows:
@@ -220,12 +224,16 @@ def update_client_version(log: logging.Logger) -> None:
         log.debug("Creating version.py in client directory")
 
     log.info("Updating client version")
-    with open(version_path, "w") as stream:
-        stream.write(VERSION_PY_CONTENT)
+    Path(version_path).write_text(VERSION_PY_CONTENT, encoding="utf-8")
 
 
 def build_frontend() -> None:
-    """Build frontend code."""
+    """Build frontend code.
+
+    Raises:
+        RuntimeError: If yarn executable is not found.
+
+    """
     yarn_executable = _get_yarn_executable()
     if yarn_executable is None:
         msg = "Yarn executable was not found."
@@ -273,7 +281,12 @@ def get_client_files_mapping() -> List[Tuple[str, str]]:
 
 
 def get_client_zip_content(log: logging.Logger) -> io.BytesIO:
-    """Prepare client code zip."""
+    """Prepare client code zip.
+
+    Returns:
+        io.BytesIO: BytesIO object with zipped client code.
+
+    """
     log.info("Preparing client code zip")
     files_mapping: List[Tuple[str, str]] = get_client_files_mapping()
     stream = io.BytesIO()
@@ -285,7 +298,13 @@ def get_client_zip_content(log: logging.Logger) -> io.BytesIO:
 
 
 def get_base_files_mapping() -> List[FileMapping]:
-    """Get mapping of server side files to copy."""
+    """Get mapping of server side files to copy.
+
+    Returns:
+        list[tuple[str, str]]: List of tuples with source file and destination
+            subpath.
+
+    """
     filepaths_to_copy: List[FileMapping] = [
         (
             os.path.join(CURRENT_ROOT, "package.py"),
@@ -377,8 +396,7 @@ def copy_addon_package(
         dst_dir: str = os.path.dirname(dst_path)
         os.makedirs(dst_dir, exist_ok=True)
         if isinstance(src_file, io.BytesIO):
-            with open(dst_path, "wb") as stream:
-                stream.write(src_file.getvalue())
+            Path(dst_path).write_bytes(src_file.getvalue())
         else:
             safe_copy_file(src_file, dst_path)
 
@@ -399,7 +417,7 @@ def create_addon_package(
         log (logging.Logger): Logger object
 
     """
-    log.info("Creating package for %s-%s",ADDON_NAME, ADDON_VERSION)
+    log.info("Creating package for %s-%s", ADDON_NAME, ADDON_VERSION)
 
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(
@@ -423,7 +441,12 @@ def main(
     skip_zip: Optional[bool] = False,
     only_client: Optional[bool] = False
 ) -> None:
-    """Main function to create package."""
+    """Main function to create package.
+
+    Raises:
+        RuntimeError: If client code is not found.
+
+    """
     log: logging.Logger = logging.getLogger("create_package")
     log.info("Package creation started")
 

@@ -17,7 +17,6 @@ if TYPE_CHECKING:
     from ayon_core.pipeline import CreatedInstance
 
 
-
 class CreateTrackingPoints(MochaCreator):
     """Create tracking points instance."""
     identifier = "io.ayon.creators.mochapro.trackpoints"
@@ -26,9 +25,13 @@ class CreateTrackingPoints(MochaCreator):
     product_type = "trackpoints"
     icon = "cubes"
 
-
     def get_attr_defs_for_instance(self, instance: CreatedInstance) -> list:
-        """Get attribute definitions for instance."""
+        """Get attribute definitions for instance.
+
+        Returns:
+            list: List of attribute definitions.
+
+        """
         version = get_mocha_version()
         settings = (
             self.project_settings
@@ -51,7 +54,7 @@ class CreateTrackingPoints(MochaCreator):
         exporters = get_tracking_exporters()
         exporter_items = {ex.id: ex.label for ex in exporters}
 
-        preselect_exporters =  [
+        preselect_exporters = [
             ex.id
             for ex in exporters
             if ex.short_name in exporter_settings
@@ -89,5 +92,3 @@ class CreateTrackingPoints(MochaCreator):
                     }),
 
         ]
-
-
