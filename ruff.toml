@@ -1,3 +1,7 @@
+# Assume Python 3.7 as we need to support Mocha 2021
+target-version = "py37"
+
+
 # Exclude a variety of commonly ignored directories.
 exclude = [
     ".bzr",
@@ -25,7 +29,9 @@ exclude = [
     "dist",
     "node_modules",
     "site-packages",
-    "venv",
+    ".venv",
+    ".poetry",
+    "stubs",
 ]
 
 # Same as Black.
@@ -33,11 +39,26 @@ line-length = 79
 indent-width = 4
 
 [lint]
-# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
-# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
-# McCabe complexity (`C901`) by default.
-select = ["E", "F", "W"]
-ignore = []
+select = ["ALL"]
+preview = true
+
+ignore = [
+    "PTH",
+    "ANN204",
+    "COM812",
+    "S603",
+    "ERA001",
+    "TRY003",
+    "UP006",   # support for older python version (type vs. Type)
+    "UP007",   # ..^
+    "UP035",   # ..
+    "UP045",   # UP045 Use `X | None` for type annotations
+    "ARG002",
+    "INP001",  # add `__init__.py` to namespaced package
+    "S404",    # subprocess module is possibly insecure
+    "PLC0415", # import must be on top of the file
+    "CPY001",  # missing copyright header
+]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
@@ -72,3 +93,10 @@ docstring-code-format = false
 # This only has an effect when the `docstring-code-format` setting is
 # enabled.
 docstring-code-line-length = "dynamic"
+
+
+[lint.per-file-ignores]
+"tests/*.py" = ["S101", "PLR2004"]  # allow asserts and magical values
+
+[lint.pydocstyle]
+convention = "google"
