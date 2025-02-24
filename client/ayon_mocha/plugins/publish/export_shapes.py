@@ -222,20 +222,27 @@ class ExportShape(publish.Extractor):
                        f"from {exporter_info.label} exporter.")
                 raise KnownPublishError(msg)
 
-            """"
-            ext = self._get_extension(exporter_info)
-            if not ext:
-                msg = ("Cannot get extension "
-                       f"from {exporter_info.label} exporter.")
-                raise KnownPublishError(msg)
-            """
-
             exporter_short_hash = exporter_info.id[:8]
+
+            version = get_mocha_version() or "2024"
+
+            # exporters were rewritten in 2025. For older version
+            # we need to parse the file extension from the exporter
+            # label. We add it here so it is later on used from the
+            # resulted file name.
             file_name = f"{product_name}_{exporter_short_hash}"
+            if int(version.split(".")[0]) < 2025:
+                ext = ExportShape._get_extension(exporter_info)
+                if not ext:
+                    msg = ("Cannot get extension "
+                           f"from {exporter_info.label} exporter.")
+                    raise KnownPublishError(msg)
+                file_name += f".{ExportShape._get_extension(exporter_info)}"
 
             tracking_file_path = (
                     process_info.staging_dir / file_name
             )
+
             # this is for some reason needed to pass it to `do_render()`
             views_typed: List[View] = list(views_to_export)
             layers_typed: List[Layer] = [layer]
@@ -256,9 +263,14 @@ class ExportShape(publish.Extractor):
                 Path(k).write_bytes(v)
                 output_files.append(Path(k).name)
 
+                print(f"Exported: {k}")
+                print(f"Ext: {Path(k).suffix[1:]}")
+
+
                 if ext is None:
                     ext = Path(k).suffix[1:]
 
+            print(f"set ext {ext}")
             output.append({
                 "name": exporter_info.label,
                 "ext": ext,
