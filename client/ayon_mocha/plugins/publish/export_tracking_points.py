@@ -261,8 +261,6 @@ class ExportTrackingPoints(publish.Extractor):
                     raise KnownPublishError(msg)
                 file_name += f".{ExportTrackingPoints._get_extension(exporter_info)}"  # noqa: E501
 
-            file_name = f"{product_name}_{exporter_short_hash}"
-
             tracking_file_path = (
                     process_info.staging_dir / file_name
             )

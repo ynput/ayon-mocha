@@ -179,8 +179,8 @@ class ExportShape(publish.Extractor):
             file.writelines(files)
         return file_name
 
-    @staticmethod
     def export(
+            self,
             product_name: str,
             project: Project,
             exporters: list[ExporterInfo],
@@ -240,7 +240,7 @@ class ExportShape(publish.Extractor):
                     raise KnownPublishError(msg)
                 file_name += f".{ExportShape._get_extension(exporter_info)}"
 
-            tracking_file_path = (
+            shapes_file_path = (
                     process_info.staging_dir / file_name
             )
 
@@ -250,9 +250,13 @@ class ExportShape(publish.Extractor):
             result = exporter_info.exporter.do_export(
                 project,
                 layers_typed,
-                tracking_file_path.as_posix(),
+                shapes_file_path.as_posix(),
                 views_typed
             )
+            self.log.debug(
+                "Selected exporter: %s", exporter_name)
+            self.log.debug(
+                "Exporting to: %s", shapes_file_path)
 
             if not result:
                 msg = f"Export failed for {exporter_name}."
