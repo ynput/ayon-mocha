@@ -23,6 +23,7 @@ if TYPE_CHECKING:
     from ayon_mocha.api.lib import ExporterInfo
 
 EXTENSION_PATTERN = re.compile(r"(?P<name>.+)\(\*\.(?P<ext>\w+)\)")
+MOCHA_2025 = 2025
 
 
 class ExportTrackingPoints(publish.Extractor):
@@ -252,13 +253,13 @@ class ExportTrackingPoints(publish.Extractor):
             # label. We add it here so it is later on used from the
             # resulted file name.
             file_name = f"{product_name}_{exporter_short_hash}"
-            if int(version.split(".")[0]) < 2025:
+            if int(version.split(".")[0]) < MOCHA_2025:
                 ext = ExportTrackingPoints._get_extension(exporter_info)
                 if not ext:
                     msg = ("Cannot get extension "
                            f"from {exporter_info.label} exporter.")
                     raise KnownPublishError(msg)
-                file_name += f".{ExportTrackingPoints._get_extension(exporter_info)}"
+                file_name += f".{ExportTrackingPoints._get_extension(exporter_info)}"  # noqa: E501
 
             file_name = f"{product_name}_{exporter_short_hash}"
 
