@@ -22,6 +22,15 @@ semver = "^3.0.2"
 ayon-python-api = "^1.0.11"
 clique = "^2.0.0"
 attrs = "^24.3.0"
+mkdocs = "*"
+mkdocs-material = "*"
+mkdocstrings = "*"
+mkdocs-autoapi = "*"
+mkdocs-minify-plugin = "*"
+mkdocs-gen-files = "*"
+
+[tool.poetry.extras]
+python = ["mkdocstrings", "mkdocs-autoapi"]
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.14.1"

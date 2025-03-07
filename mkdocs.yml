@@ -1,0 +1,23 @@
+site_name: AYON Mocha Addon API Documentation
+site_url: https://ayon.ynput.io/docs/addons/mocha/
+repo_url: https://github.com/ynput/ayon-mocha
+
+
+theme:
+  name: "material"
+
+nav:
+  - Home: index.md
+  # - API Reference: autoapi/
+
+plugins:
+  - search
+  - mkdocs-autoapi:
+      autoapi_dir: client
+      autoapi_add_nav_entry: Reference
+  - mkdocstrings:
+      handlers:
+        python:
+          paths:
+            - client
+            - stubs
