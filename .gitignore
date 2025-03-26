@@ -163,3 +163,5 @@ Temporary Items
 
 # local poetry installation
 .poetry/
+# ignore mkdocs build
+site/
