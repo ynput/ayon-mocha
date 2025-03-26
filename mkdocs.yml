@@ -45,9 +45,9 @@ plugins:
         - docs/**/*
         - tests/**/*
         - tools/**/*
+        - stubs/**/*
         - .*/**/*
         - ./*.py
-        - stubs/**/*
   - mkdocstrings:
       handlers:
         python:
