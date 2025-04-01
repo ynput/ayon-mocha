@@ -6,10 +6,11 @@
 
 [tool.poetry]
 name = "ayon-mocha"
-version = "0.0.1+dev"
+version = "1.0.0"
 description = ""
 authors = ["Ynput Team <team@ynput.io>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 # this is for development only
@@ -25,6 +26,17 @@ attrs = "^24.3.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.14.1"
+tomlkit = "^0.13.2"
+requests = "^2.32.3"
+mkdocs-material = "^9.6.7"
+mkdocs-autoapi = "^0.4.0"
+mkdocstrings-python = "^1.16.2"
+mkdocs-minify-plugin = "^0.8.0"
+markdown-checklist = "^0.4.4"
+mdx-gh-links = "^0.4"
+pymdown-extensions = "^10.14.3"
+mike = "^2.1.3"
+mkdocstrings-shell = "^1.0.2"
 
 [poetry.group.dev.dependencies]
 # test dependencies
