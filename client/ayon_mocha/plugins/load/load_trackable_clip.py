@@ -57,7 +57,7 @@ class LoadTrackableClip(MochaLoader):
             file_path = self.filepath_from_context(context)
 
             try:
-                image_info = get_image_info(file_path)
+                image_info = get_image_info(Path(file_path))
             except ValueError as exc:
                 msg = (
                     f"Failed to get image info from {file_path}: {exc}"
