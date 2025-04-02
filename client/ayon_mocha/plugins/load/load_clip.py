@@ -106,7 +106,7 @@ class LoadClip(MochaLoader):
         project = host.get_current_project()
         clips = project.get_clips()
 
-        # get image info usin OIIO
+        # get image info using OIIO
         try:
             image_info = get_image_info(Path(file_path))
         except ValueError as e:
