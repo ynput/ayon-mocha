@@ -11,7 +11,7 @@ from pathlib import Path
 from shutil import copyfile
 from typing import TYPE_CHECKING, Any, Optional, Union
 
-from mocha import REGISTRY_APPLICATION_NAME, get_mocha_exec_name, ui
+from mocha import REGISTRY_APPLICATION_NAME, ui
 from mocha.exporters import ShapeDataExporter, TrackingDataExporter
 from mocha.project import Clip, Project
 from qtpy.QtWidgets import QApplication
@@ -54,6 +54,20 @@ class ExporterProcessInfo:
     staging_dir: Path
     options: dict[str, bool]
 
+
+def get_mocha_exec_name(_: str) -> str:
+    """Get the name of the Mocha executable.
+
+    This function replaces the original `get_mocha_exec_name` function
+    because of the bug where it doesn't work on Linux.
+
+    Args:
+        _: Application name (not used in this implementation).
+
+    Returns:
+        str: Path to the Mocha executable.
+    """
+    return sys.executable
 
 def get_main_window() -> QtWidgets.QWidget:
     """Get the main window of the application.
