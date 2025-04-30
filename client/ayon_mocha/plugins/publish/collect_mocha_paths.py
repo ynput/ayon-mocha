@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar
 
 import pyblish.api
-from mocha import get_mocha_exec_name
+from ayon_mocha.api.lib import get_mocha_exec_name
 
 if TYPE_CHECKING:
     from logging import Logger
