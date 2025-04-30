@@ -2,12 +2,13 @@
 from __future__ import annotations
 
 import time
+from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar, Optional
 
 from ayon_core.lib.transcoding import IMAGE_EXTENSIONS
 from ayon_core.pipeline import get_representation_path, registered_host
 from ayon_core.pipeline.load import LoadError
-from ayon_mocha.api.lib import update_ui
+from ayon_mocha.api.lib import get_image_info, update_ui
 from ayon_mocha.api.pipeline import (
     Container,
     MochaProHost,
@@ -54,6 +55,21 @@ class LoadTrackableClip(MochaLoader):
             # project.parameter([current_clip, "name"]).set(name)
 
             file_path = self.filepath_from_context(context)
+
+            try:
+                image_info = get_image_info(Path(file_path))
+            except ValueError as exc:
+                msg = (
+                    f"Failed to get image info from {file_path}: {exc}"
+                )
+                raise LoadError(msg) from exc
+
+            # set clip properties
+            current_clip.frame_size = (
+                image_info.get("width", 1920),
+                image_info.get("height", 1080)
+            )
+
             current_clip.relink(file_path)
 
             for cnt in host.get_containers():
@@ -90,7 +106,12 @@ class LoadTrackableClip(MochaLoader):
         host.remove_container(Container(**container))
 
     def update(self, container: dict, context: dict) -> None:
-        """Update a container."""
+        """Update a container.
+
+        Raises:
+            LoadError: If the clip information cannot be determined.
+
+        """
         host: MochaProHost = registered_host()
 
         version_entity = context["version"]
@@ -99,8 +120,19 @@ class LoadTrackableClip(MochaLoader):
         file_path = get_representation_path(repre_entity)
         project = host.get_current_project()
         clips = project.get_clips()
+
+        try:
+            image_info = get_image_info(Path(file_path))
+        except ValueError as exc:
+            msg = f"Failed to get image info from {file_path}: {exc}"
+            raise LoadError(msg) from exc
         try:
             clips[container["objectName"]].relink(file_path)
+            # set clip properties
+            clips[container["objectName"]].frame_size = (
+                image_info.get("width", 1920),
+                image_info.get("height", 1080),
+            )
         except KeyError:
             self.log.warning("Clip %s not found", container["objectName"])
         update_ui()

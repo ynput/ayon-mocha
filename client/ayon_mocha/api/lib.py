@@ -11,7 +11,9 @@ from pathlib import Path
 from shutil import copyfile
 from typing import TYPE_CHECKING, Any, Optional, Union
 
+from ayon_core.lib.transcoding import get_oiio_info_for_input
 from mocha import REGISTRY_APPLICATION_NAME, ui
+
 from mocha.exporters import ShapeDataExporter, TrackingDataExporter
 from mocha.project import Clip, Project
 from qtpy.QtWidgets import QApplication
@@ -263,3 +265,25 @@ def get_mocha_version() -> Optional[str]:
     result = re.search(
         r"Mocha Pro (?P<version>\d+\.?\d+)", app_name)
     return result["version"] if result else None
+
+
+def get_image_info(path: Path) -> dict:
+    """Get image information using OIIO.
+
+    Args:
+        path (Path): Path to the image file.
+
+    Returns:
+        dict: Image information.
+
+    Raises:
+        ValueError: If the image information cannot be retrieved.
+
+    """
+    image_info = get_oiio_info_for_input(path.as_posix())
+    if image_info is None:
+        msg = (
+            f"Failed to get image info for {path}"
+        )
+        raise ValueError(msg)
+    return image_info

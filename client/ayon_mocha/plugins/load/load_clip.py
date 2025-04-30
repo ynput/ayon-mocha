@@ -2,11 +2,13 @@
 from __future__ import annotations
 
 import time
+from pathlib import Path
 from typing import ClassVar, Optional
 
 from ayon_core.lib.transcoding import IMAGE_EXTENSIONS
 from ayon_core.pipeline import get_representation_path, registered_host
-from ayon_mocha.api.lib import update_ui
+from ayon_core.pipeline.load import LoadError
+from ayon_mocha.api.lib import get_image_info, update_ui
 from ayon_mocha.api.pipeline import (
     Container,
     MochaProHost,
@@ -85,7 +87,16 @@ class LoadClip(MochaLoader):
         host.remove_container(Container(**container))
 
     def update(self, container: dict, context: dict) -> None:
-        """Update a container."""
+        """Update a container.
+
+        Args:
+            container (dict): Container to update.
+            context (dict): Context to update the container to.
+
+        Raises:
+            LoadError: If the image info cannot be retrieved.
+
+        """
         host: MochaProHost = registered_host()
 
         version_entity = context["version"]
@@ -94,8 +105,20 @@ class LoadClip(MochaLoader):
         file_path = get_representation_path(repre_entity)
         project = host.get_current_project()
         clips = project.get_clips()
+
+        # get image info using OIIO
+        try:
+            image_info = get_image_info(Path(file_path))
+        except ValueError as e:
+            msg = f"Failed to get image info for {file_path}: {e}"
+            raise LoadError(msg) from e
+
         try:
             clips[container["objectName"]].relink(file_path)
+            clips[container["objectName"]].frame_size = (
+                image_info.get("width", 1920),
+                image_info.get("height", 1080),
+            )
         except KeyError:
             self.log.warning("Clip %s not found", container["objectName"])
         update_ui()
