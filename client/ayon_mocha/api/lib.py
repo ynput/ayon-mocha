@@ -69,6 +69,7 @@ def get_mocha_exec_name(_: str) -> str:
     """
     return sys.executable
 
+
 def get_main_window() -> QtWidgets.QWidget:
     """Get the main window of the application.
 
