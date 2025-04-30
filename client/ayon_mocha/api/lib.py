@@ -13,7 +13,6 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 
 from ayon_core.lib.transcoding import get_oiio_info_for_input
 from mocha import REGISTRY_APPLICATION_NAME, ui
-
 from mocha.exporters import ShapeDataExporter, TrackingDataExporter
 from mocha.project import Clip, Project
 from qtpy.QtWidgets import QApplication
