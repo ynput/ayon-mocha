@@ -188,7 +188,7 @@ class Clip:
     color_parameters: ColorParameters
     first_frame_offset: int
     frame_rate: float
-    frame_size: float
+    frame_size: tuple(int, int)
     psets: ParameterSet
     def __init__(self,
         clip_path: str,
