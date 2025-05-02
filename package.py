@@ -14,6 +14,7 @@ version = "0.0.1"
 # Name of client code directory imported in AYON launcher
 # - do not specify if there is no client code
 client_dir = "ayon_mocha"
+app_host_name = "mocha"
 
 # Version compatibility with AYON server
 ayon_server_version = ">=1.1.2"
