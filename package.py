@@ -15,6 +15,7 @@ version = "1.0.0+dev"
 # - do not specify if there is no client code
 client_dir = "ayon_mocha"
 app_host_name = "mocha"
+project_can_override_addon_version = True
 
 # Version compatibility with AYON server
 ayon_server_version = ">=1.1.2"
