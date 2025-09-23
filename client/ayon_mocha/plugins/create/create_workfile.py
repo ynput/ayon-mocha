@@ -47,11 +47,12 @@ class CreateWorkfile(MochaCreator, AutoCreator):
                 project_name, folder_entity["id"], task_name
             )
             product_name = self.get_product_name(
-                project_name,
-                folder_entity,
-                task_entity,
-                variant,
-                host_name,
+                project_name=project_name,
+                project_entity=project_entity,
+                folder_entity=folder_entity,
+                task_entity=task_entity,
+                variant=variant,
+                host_name=host_name,
             )
             data = {
                 "folderPath": folder_path,
@@ -84,11 +85,12 @@ class CreateWorkfile(MochaCreator, AutoCreator):
                 project_name, folder_entity["id"], task_name
             )
             product_name = self.get_product_name(
-                project_name,
-                folder_entity,
-                task_entity,
-                variant,
-                host_name,
+                project_name=project_name,
+                project_entity=project_entity,
+                folder_entity=folder_entity,
+                task_entity=task_entity,
+                variant=variant,
+                host_name=host_name,
             )
 
             current_instance["folderPath"] = folder_entity["path"]
