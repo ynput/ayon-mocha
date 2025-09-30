@@ -9,7 +9,7 @@ name = "mocha"
 title = "Mocha"
 
 # Required: Valid semantic version (https://semver.org/)
-version = "1.0.1"
+version = "1.0.1+dev"
 
 # Name of client code directory imported in AYON launcher
 # - do not specify if there is no client code
