@@ -6,7 +6,7 @@
 
 [tool.poetry]
 name = "ayon-mocha"
-version = "1.0.0"
+version = "1.0.1+dev"
 description = ""
 authors = ["Ynput Team <team@ynput.io>"]
 readme = "README.md"
