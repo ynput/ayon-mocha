@@ -213,6 +213,7 @@ def find_files_in_subdir(
 
 
 def update_pyproject_version(log: logging.Logger) -> None:
+    """Update version in pyproject.toml if it exists."""
     pyproject_toml = os.path.join(CURRENT_ROOT, "pyproject.toml")
     if not os.path.exists(pyproject_toml):
         log.info("Did not find pyproject.toml in root directory. Skipping")
@@ -220,19 +221,19 @@ def update_pyproject_version(log: logging.Logger) -> None:
 
     line_idx = None
     new_lines = []
-    with open(pyproject_toml, encoding="utf-8") as stream:
-        for idx, line in enumerate(stream.readlines()):
-            if line_idx is None and line.startswith("version"):
-                line_idx = idx
-            new_lines.append(line)
+    for idx, line in enumerate(
+        Path(pyproject_toml).read_text(encoding="utf-8").splitlines()
+    ):
+        if line_idx is None and line.startswith("version"):
+            line_idx = idx
+        new_lines.append(line)
 
     if line_idx is None:
         log.info("Failed to find version in pyproject.toml. Skipping.")
         return
 
-    new_lines[line_idx] = f'version = "{ADDON_VERSION}"\n'
-    with open(pyproject_toml, "w", encoding="utf-8") as stream:
-        stream.write("".join(new_lines))
+    new_lines[line_idx] = f'version = "{ADDON_VERSION}"'
+    Path(pyproject_toml).write_text("\n".join(new_lines), encoding="utf-8")
 
 
 def update_client_version(log: logging.Logger) -> None:
