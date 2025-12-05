@@ -21,6 +21,7 @@ class CreateShapeData(MochaCreator):
     label = "Shape Data"
     description = __doc__
     product_type = "matteshapes"
+    product_base_type = "matteshapes"
     icon = "circle"
 
     def get_attr_defs_for_instance(

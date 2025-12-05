@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import inspect
 from typing import TYPE_CHECKING, ClassVar
 
 import pyblish.api
@@ -29,19 +30,28 @@ class CollectShapes(pyblish.api.InstancePlugin):
         create_context: CreateContext,
         layer_name: str,
         product_type: str,
+        product_base_type: str,
         variant: str) -> str:
         """Return the new product name."""
         sanitized_layer_name = layer_name.replace(" ", "_")
         variant = f"{sanitized_layer_name}{variant.capitalize()}"
 
-        return get_product_name(
-            project_name=create_context.project_name,
-            task_name=create_context.get_current_task_name(),
-            task_type=create_context.get_current_task_type(),
-            host_name=create_context.host_name,
-            product_type=product_type,
-            variant=variant,
-        )
+        get_product_name_kwargs = {
+            "project_name": create_context.project_name,
+            "task_name": create_context.get_current_task_name(),
+            "task_type": create_context.get_current_task_type(),
+            "host_name": create_context.host_name,
+            "product_type": product_type,
+            "variant": variant,
+        }
+
+        signature = inspect.signature(get_product_name)
+        if "product_base_type" not in signature.parameters:
+            get_product_name_kwargs["product_base_name"] = (
+                product_base_type
+            )
+
+        return get_product_name(**get_product_name_kwargs)
 
     def process(self, instance: pyblish.api.Instance) -> None:
         """Process the instance.
@@ -91,8 +101,9 @@ class CollectShapes(pyblish.api.InstancePlugin):
             new_instance.data["productName"] = self.new_product_name(
                 instance.context.data["create_context"],
                 layer.name,
-                instance.data["productType"],
-                instance.data["variant"],
+                product_type=instance.data["productType"],
+                product_base_type=instance.data["productBaseType"],
+                variant=instance.data["variant"],
             )
             self.set_layer_data_on_instance(new_instance, layer)
         if layers:
