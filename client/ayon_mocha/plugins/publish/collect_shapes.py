@@ -1,8 +1,8 @@
 """Collect layers for shape export."""
 from __future__ import annotations
 
-from copy import deepcopy
 import inspect
+from copy import deepcopy
 from typing import TYPE_CHECKING, ClassVar
 
 import pyblish.api
