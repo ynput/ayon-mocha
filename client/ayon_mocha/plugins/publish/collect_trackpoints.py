@@ -1,7 +1,6 @@
 """Collect instances for publishing."""
 from __future__ import annotations
 
-import inspect
 from copy import deepcopy
 from typing import TYPE_CHECKING, ClassVar
 
@@ -38,16 +37,26 @@ class CollectTrackpoints(pyblish.api.InstancePlugin):
 
         get_product_name_kwargs = {
             "project_name": create_context.project_name,
-            "task_name": create_context.get_current_task_name(),
-            "task_type": create_context.get_current_task_type(),
             "host_name": create_context.host_name,
             "product_type": product_type,
-            "variant": variant
+            "variant": variant,
         }
 
-        signature = inspect.signature(get_product_name)
-        if "product_base_type" in signature.parameters:
-            get_product_name_kwargs["product_base_type"] = product_base_type
+        if getattr(get_product_name, "use_entities", False):
+            get_product_name_kwargs.update(
+                {
+                    "folder_entity": create_context.get_current_folder_entity(),
+                    "task_entity": create_context.get_current_task_entity(),
+                    "product_base_type": product_base_type,
+                }
+            )
+        else:
+            get_product_name_kwargs.update(
+                {
+                    "task_name": create_context.get_current_task_name(),
+                    "task_type": create_context.get_current_task_type(),
+                }
+            )
 
         return get_product_name(**get_product_name_kwargs)
 
