@@ -43,20 +43,16 @@ class CollectTrackpoints(pyblish.api.InstancePlugin):
         }
 
         if getattr(get_product_name, "use_entities", False):
-            get_product_name_kwargs.update(
-                {
-                    "folder_entity": create_context.get_current_folder_entity(),
-                    "task_entity": create_context.get_current_task_entity(),
-                    "product_base_type": product_base_type,
-                }
-            )
+            get_product_name_kwargs.update({
+                "folder_entity": create_context.get_current_folder_entity(),
+                "task_entity": create_context.get_current_task_entity(),
+                "product_base_type": product_base_type,
+            })
         else:
-            get_product_name_kwargs.update(
-                {
-                    "task_name": create_context.get_current_task_name(),
-                    "task_type": create_context.get_current_task_type(),
-                }
-            )
+            get_product_name_kwargs.update({
+                "task_name": create_context.get_current_task_name(),
+                "task_type": create_context.get_current_task_type(),
+            })
 
         return get_product_name(**get_product_name_kwargs)
 
