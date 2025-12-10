@@ -35,12 +35,7 @@ class CollectTrackpoints(pyblish.api.InstancePlugin):
         sanitized_layer_name = layer_name.replace(" ", "_")
         variant = f"{sanitized_layer_name}{variant.capitalize()}"
 
-        get_product_name_kwargs = {
-            "project_name": create_context.project_name,
-            "host_name": create_context.host_name,
-            "product_type": product_type,
-            "variant": variant,
-        }
+        get_product_name_kwargs = {}
 
         if getattr(get_product_name, "use_entities", False):
             get_product_name_kwargs.update({
@@ -54,7 +49,13 @@ class CollectTrackpoints(pyblish.api.InstancePlugin):
                 "task_type": create_context.get_current_task_type(),
             })
 
-        return get_product_name(**get_product_name_kwargs)
+        return get_product_name(
+            project_name=create_context.project_name,
+            host_name=create_context.host_name,
+            product_type=product_type,
+            variant=variant,
+            **get_product_name_kwargs
+        )
 
     def process(self, instance: pyblish.api.Instance) -> None:
         """Process the instance.
