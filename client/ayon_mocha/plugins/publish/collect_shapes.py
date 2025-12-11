@@ -29,18 +29,32 @@ class CollectShapes(pyblish.api.InstancePlugin):
         create_context: CreateContext,
         layer_name: str,
         product_type: str,
+        product_base_type: str,
         variant: str) -> str:
         """Return the new product name."""
         sanitized_layer_name = layer_name.replace(" ", "_")
         variant = f"{sanitized_layer_name}{variant.capitalize()}"
 
+        get_product_name_kwargs = {}
+
+        if getattr(get_product_name, "use_entities", False):
+            get_product_name_kwargs.update({
+                "folder_entity": create_context.get_current_folder_entity(),
+                "task_entity": create_context.get_current_task_entity(),
+                "product_base_type": product_base_type,
+            })
+        else:
+            get_product_name_kwargs.update({
+                "task_name": create_context.get_current_task_name(),
+                "task_type": create_context.get_current_task_type(),
+            })
+
         return get_product_name(
             project_name=create_context.project_name,
-            task_name=create_context.get_current_task_name(),
-            task_type=create_context.get_current_task_type(),
             host_name=create_context.host_name,
             product_type=product_type,
             variant=variant,
+            **get_product_name_kwargs
         )
 
     def process(self, instance: pyblish.api.Instance) -> None:
@@ -91,8 +105,9 @@ class CollectShapes(pyblish.api.InstancePlugin):
             new_instance.data["productName"] = self.new_product_name(
                 instance.context.data["create_context"],
                 layer.name,
-                instance.data["productType"],
-                instance.data["variant"],
+                product_type=instance.data["productType"],
+                product_base_type=instance.data["productBaseType"],
+                variant=instance.data["variant"],
             )
             self.set_layer_data_on_instance(new_instance, layer)
         if layers:

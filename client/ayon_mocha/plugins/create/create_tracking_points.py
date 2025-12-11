@@ -23,6 +23,7 @@ class CreateTrackingPoints(MochaCreator):
     label = "Track Points"
     description = __doc__
     product_type = "trackpoints"
+    product_base_type = "trackpoints"
     icon = "cubes"
 
     def get_attr_defs_for_instance(self, instance: CreatedInstance) -> list:

@@ -190,8 +190,8 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
             dst_path (str, optional): The destination path to save the file to.
                 Defaults to None.
 
-        Todo (antirotor): This needs to display error if the project
-            isn't initialized yet.
+        Todo:
+            This needs to display error if the project isn't initialized yet.
             https://github.com/ynput/ayon-core/issues/1075
 
         """
@@ -239,13 +239,13 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         data = self.get_ayon_data()
         containers_dicts = list(self.get_containers())
         containers = [
-            Container(**_container) for _container in containers_dicts
+            Container(**container_) for container_ in containers_dicts
         ]
         to_remove = [
             idx
-            for idx, _container in enumerate(containers)
-            if _container.name == container.name
-            and _container.namespace == container.namespace
+            for idx, container_ in enumerate(containers)
+            if container_.name == container.name
+            and container_.namespace == container.namespace
         ]
         for idx in reversed(to_remove):
             containers.pop(idx)
@@ -265,19 +265,19 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         data = self.get_ayon_data()
         containers_dicts = list(self.get_containers())
         containers = [
-            Container(**_container) for _container in containers_dicts
+            Container(**container_) for container_ in containers_dicts
         ]
         to_remove = [
             idx
-            for idx, _container in enumerate(containers)
-            if _container.name == container.name
-            and _container.namespace == container.namespace
+            for idx, container_ in enumerate(containers)
+            if container_.name == container.name
+            and container_.namespace == container.namespace
         ]
         for idx in reversed(to_remove):
             containers.pop(idx)
 
         data[MOCHA_CONTAINERS_KEY] = [
-            dataclasses.asdict(_container) for _container in containers]
+            dataclasses.asdict(container_) for container_ in containers]
 
         self.update_ayon_data(data)
 
