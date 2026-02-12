@@ -415,6 +415,7 @@ class Mocha2025TrackingModel(BaseSettingsModel):
 
 
 class ProductTypeItemModel(BaseSettingsModel):
+    """Model for product type item in creator plugins settings."""
     _layout = "compact"
     product_type: str = SettingsField(
         title="Product Type",
@@ -424,6 +425,7 @@ class ProductTypeItemModel(BaseSettingsModel):
         title="Label",
         description="Label to display in UI for the product type",
     )
+
 
 class CreateTrackingPointsModel(BaseSettingsModel):
     """Settings for creating tracking points."""
