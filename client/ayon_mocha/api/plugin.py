@@ -32,14 +32,15 @@ class MochaCreator(Creator):
 
         """
         instance = CreatedInstance(
-            self.product_type,
-            product_name,
-            instance_data,
-            self,
+            product_type=self.product_type,
+            product_name=product_name,
+            data=instance_data,
+            creator=self,
+            product_base_type=self.product_base_type,
         )
         self._add_instance_to_context(instance)
         host: MochaProHost = self.host
-        host.add_publish_instance(instance.data_to_store())\
+        host.add_publish_instance(instance.data_to_store())
 
         return instance
 

@@ -414,6 +414,17 @@ class Mocha2025TrackingModel(BaseSettingsModel):
         enum_resolver=tracking_exporter_enum_2025)
 
 
+class ProductTypeItemModel(BaseSettingsModel):
+    _layout = "compact"
+    product_type: str = SettingsField(
+        title="Product Type",
+        decription="Product type name"
+    )
+    label: str = SettingsField(
+        title="Label",
+        description="Label to display in UI for the product type",
+    )
+
 class CreateTrackingPointsModel(BaseSettingsModel):
     """Settings for creating tracking points."""
     enabled: bool = SettingsField(
@@ -424,6 +435,13 @@ class CreateTrackingPointsModel(BaseSettingsModel):
     mocha_2025: Mocha2025TrackingModel = SettingsField(
         default_factory=Mocha2025TrackingModel,
         title="Mocha Pro 2025")
+    product_type_items: list[ProductTypeItemModel] = SettingsField(
+        default_factory=list,
+        title="Product Type Items",
+        description=(
+            "Optional list of product types this plugin can create."
+        )
+    )
 
 
 class Mocha2024ShapeModel(BaseSettingsModel):
@@ -450,6 +468,13 @@ class CreateShapeDataModel(BaseSettingsModel):
     mocha_2025: Mocha2025ShapeModel = SettingsField(
         default_factory=Mocha2025ShapeModel,
         title="Mocha Pro 2025")
+    product_type_items: list[ProductTypeItemModel] = SettingsField(
+        default_factory=list,
+        title="Product Type Items",
+        description=(
+            "Optional list of product types this plugin can create."
+        )
+    )
 
 
 class MochaProCreatorPlugins(BaseSettingsModel):
