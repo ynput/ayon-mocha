@@ -25,7 +25,8 @@ class LoadClip(MochaLoader):
     icon = "code-fork"
     color = "orange"
 
-    product_types: ClassVar[set[str]] = {"*"}
+    product_base_types: ClassVar[set[str]] = {"*"}
+    product_types = product_base_types
     representations: ClassVar[set[str]] = {"*"}
     extensions: ClassVar[set[str]] = {
         ext.lstrip(".") for ext in IMAGE_EXTENSIONS}

@@ -58,6 +58,7 @@ ignore = [
     "S404",    # subprocess module is possibly insecure
     "PLC0415", # import must be on top of the file
     "CPY001",  # missing copyright header
+    "RUF067",  # code in __init__.py__
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
