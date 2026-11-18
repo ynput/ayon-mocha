@@ -81,7 +81,7 @@ def create_init_file(dirpath: str, msg: str) -> None:
     ini_file = f"{dirpath}/__init__.py"
     Path(ini_file).touch()
     NFILES.append(ini_file)
-    logging.info(  # noqa: LOG015
+    logging.info(  # ruff: ignore[root-logger-call]
         "%s: created '%s'", msg, ini_file)
 
 
@@ -149,7 +149,7 @@ def remove_missing_init_files(msg: str = "") -> None:
         msg: An optional message to display during the removal process.
 
     """
-    global NFILES  # noqa: PLW0603
+    global NFILES  # ruff: ignore[global-statement]
     nfiles = []
     if os.path.exists(TMP_FILE):
         with open(TMP_FILE, encoding="utf-8") as f:
@@ -159,7 +159,7 @@ def remove_missing_init_files(msg: str = "") -> None:
 
     for file in nfiles:
         Path(file).unlink()
-        logging.info("%s: removed %s", msg, file)  # noqa: LOG015
+        logging.info("%s: removed %s", msg, file)  # ruff: ignore[root-logger-call]
 
     os.remove(TMP_FILE)
     NFILES = []
@@ -182,11 +182,11 @@ def remove_pychache_dirs(msg: str = "") -> None:
             pydir = Path(f"{dirpath}/__pycache__")
             rmtree(pydir)
             nremoved += 1
-            logging.info(  # noqa: LOG015
+            logging.info(  # ruff: ignore[root-logger-call]
                 "%s: removed '%s'", msg, pydir)
 
     if not nremoved:
-        logging.info(  # noqa: LOG015
+        logging.info(  # ruff: ignore[root-logger-call]
             "%s: no __pycache__ dirs found", msg)
 
 
@@ -194,13 +194,13 @@ def remove_pychache_dirs(msg: str = "") -> None:
 
 
 def on_startup(
-        command: Literal["build", "gh-deploy", "serve"], *,  # noqa: ARG001
-        dirty: bool) -> None:  # noqa: ARG001
-    """On statup hook for MkDocs."""
+        command: Literal["build", "gh-deploy", "serve"], *,  # ruff: ignore[unused-function-argument]
+        dirty: bool) -> None:  # ruff: ignore[unused-function-argument]
+    """On startup hook for MkDocs."""
     remove_pychache_dirs(msg="HOOK    -  on_startup")
 
 
-def on_pre_build(config: MkDocsConfig) -> None:  # noqa: ARG001
+def on_pre_build(config: MkDocsConfig) -> None:  # ruff: ignore[unused-function-argument]
     """On pre-build hook for MkDocs.
 
     This function is called before the MkDocs build process begins. It adds
@@ -221,14 +221,14 @@ def on_pre_build(config: MkDocsConfig) -> None:  # noqa: ARG001
             msg="HOOK    -  on_pre_build",
         )
     except BaseException as e:
-        logging.exception("cleaning up error", exc_info=e)  # noqa: LOG015
+        logging.exception("cleaning up error", exc_info=e)  # ruff: ignore[root-logger-call]
         remove_missing_init_files(
             msg="HOOK    -  on_post_build: cleaning up on error !"
         )
         raise RuntimeError from e
 
 
-def on_post_build(config: MkDocsConfig) -> None:  # noqa: ARG001
+def on_post_build(config: MkDocsConfig) -> None:  # ruff: ignore[unused-function-argument]
     """On post-build hook for MkDocs.
 
     Args:

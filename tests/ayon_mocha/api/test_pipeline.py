@@ -31,7 +31,7 @@ def mock_mocha_project_api(monkeypatch: pytest.MonkeyPatch) -> None:
         "mocha.project.Project", Project)
 
 
-def test_get_ayon_data(mock_mocha_project_api: None) -> None:  # noqa: ARG001
+def test_get_ayon_data(mock_mocha_project_api: None) -> None:  # ruff: ignore[unused-function-argument]
     """Test getting AYON data."""
     sys.modules["ayon_core.tools.utils"] = MagicMock()
     from ayon_mocha.api import MochaProHost

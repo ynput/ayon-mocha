@@ -4,39 +4,62 @@
 # be used only for local development and CI/CD purposes. To define addon
 # dependencies, use pyproject.toml file in the `client` directory.
 
-[tool.poetry]
+[project]
 name = "ayon-mocha"
 version = "1.1.0+dev"
-description = ""
-authors = ["Ynput Team <team@ynput.io>"]
+description = "Mocha Pro integration for AYON"
+authors = [
+    { name = "Ynput Team", email = "team@ynput.io" }
+]
+license = "Apache-2.0"
 readme = "README.md"
-package-mode = false
-
-[tool.poetry.dependencies]
 # this is for development only
-python = ">=3.9.1,<3.10"
-pre-commit = "^4.0.0"
-pytest-mock = "^3.14.0"
-mock = "^5.1.0"
-appdirs = "^1.4.4"
-semver = "^3.0.2"
-ayon-python-api = "^1.0.11"
-clique = "^2.0.0"
-attrs = "^24.3.0"
+requires-python = ">=3.9.1,<3.10"
+dependencies = [
+    "appdirs>=1.4.4",
+    "semver>=3.0.2",
+    "ayon-python-api>=1.0.11",
+    "clique>=2.0.0",
+    "attrs>=24.3.0",
+]
 
-[tool.poetry.group.dev.dependencies]
-mypy = "^1.14.1"
+[dependency-groups]
+dev = [
+    # linting dependencies
+    "ruff>=0.17.5",
+    "pre-commit>=4.0.0",
+    "codespell>=2.2.6",
+    "mypy>=1.14.1",
+    # test dependencies
+    "pytest>=8.0",
+    "pytest-print>=1.0",
+    "pytest-mock>=3.14.0",
+    "mock>=5.1.0",
+]
+docs = [
+    "mkdocs-material>=9.6.7",
+    "mkdocs-autoapi>=0.4.0",
+    "mkdocstrings-python>=1.16.2",
+    "mkdocs-minify-plugin>=0.8.0",
+    "markdown-checklist>=0.4.4",
+    "mdx-gh-links>=0.4",
+    "pymdown-extensions>=10.14.3",
+    "mike>=2.1.3",
+    "mkdocstrings-shell>=1.0.2",
+]
+tests = [
+    "pytest>=8.0",
+    "pytest-print>=1.0",
+    "pytest-mock>=3.14.0",
+    "mock>=5.1.0",
+]
 
-[poetry.group.dev.dependencies]
-# test dependencies
-pytest = "^8.0"
-pytest-print = "^1.0"
-pytest-mock = "^3.6.1"
-# linting dependencies
-ruff = "*"
-pre-commit = "^4"
-codespell = "^2.2.6"
-mypy = "^1.14.0"
+[project.urls]
+Homepage = "https://ynput.io"
+Repository = "https://github.com/ynput/ayon-mocha"
+
+[tool.uv]
+package = false
 
 [tool.codespell]
 # Ignore words that are not in the dictionary.
@@ -50,18 +73,12 @@ skip = "./.*,./package/*,*/vendor/*,*/unreal/integration/*,*/aftereffects/api/ex
 count = true
 quiet-level = 3
 
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-
 [tool.pytest.ini_options]
 log_cli = true
 log_cli_level = "INFO"
 addopts = "-ra -q"
 testpaths = [
-    "client/ayon_core/tests"
+    "tests"
 ]
 
 [tool.mypy]

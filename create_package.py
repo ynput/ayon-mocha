@@ -92,7 +92,7 @@ class ZipFileLongPaths(zipfile.ZipFile):
     """
     _is_windows = platform.system().lower() == "windows"
 
-    def _extract_member(  # noqa: ANN202
+    def _extract_member(  # ruff: ignore[missing-return-type-private-function]
             self, member: zipfile.ZipInfo, tpath: str, pwd: bytes):
         """Extract a member from the archive to the current working directory.
 

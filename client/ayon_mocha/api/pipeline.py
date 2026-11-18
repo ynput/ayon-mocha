@@ -92,7 +92,7 @@ class Container:
     namespace: str = ""
     loader: Optional[str] = None
     representation: Optional[str] = None
-    objectName: Optional[str] = None  # noqa: N815
+    objectName: Optional[str] = None  # ruff: ignore[mixed-case-variable-in-class-scope]
     timestamp: int = 0
     version: Optional[str] = None
 
@@ -174,7 +174,7 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
             lambda: host_tools.show_experimental_tools_dialog(
                 parent=main_window))
 
-    def get_workfile_extensions(self) -> list[str]:  # noqa: PLR6301
+    def get_workfile_extensions(self) -> list[str]:  # ruff: ignore[no-self-use]
         """Get the workfile extensions.
 
         Returns:
@@ -183,7 +183,7 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         """
         return file_extensions()
 
-    def save_workfile(self, dst_path: Optional[str] = None) -> None:  # noqa: PLR6301
+    def save_workfile(self, dst_path: Optional[str] = None) -> None:  # ruff: ignore[no-self-use]
         """Save the workfile.
 
         Args:
@@ -202,11 +202,11 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         if not _get_current_project():
             reset_frame_range(_get_current_project())
 
-    def open_workfile(self, filepath: str) -> None:  # noqa: PLR6301
+    def open_workfile(self, filepath: str) -> None:  # ruff: ignore[no-self-use]
         """Open the workfile."""
         open_file(Path(filepath))
 
-    def get_current_workfile(self) -> Optional[str]:  # noqa: PLR6301
+    def get_current_workfile(self) -> Optional[str]:  # ruff: ignore[no-self-use]
         """Get the current workfile.
 
         Returns:

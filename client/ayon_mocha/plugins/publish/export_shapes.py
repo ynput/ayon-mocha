@@ -117,7 +117,7 @@ class ExportShape(publish.Extractor):
                     # if there are only non-sequence files
                     for reminder in rems:
                         self.add_to_resources(
-                            Path(self.staging_dir(instance)) / reminder, instance)  # noqa: E501
+                            Path(self.staging_dir(instance)) / reminder, instance)  # ruff: ignore[line-too-long]
                     manifest_file = self._create_manifest_file(
                         staging_dir, rems, repre_name)
                     representations.append({
