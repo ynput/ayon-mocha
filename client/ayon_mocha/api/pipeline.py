@@ -151,10 +151,6 @@ class MochaProHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         action.triggered.connect(
             lambda: host_tools.show_scene_inventory(parent=main_window))
 
-        action = menu.addAction("Library...")
-        action.triggered.connect(
-            lambda: host_tools.show_library_loader(parent=main_window))
-
         menu.addSeparator()
 
         action = menu.addAction("Work Files...")
