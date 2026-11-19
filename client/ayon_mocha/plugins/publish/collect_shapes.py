@@ -96,7 +96,7 @@ class CollectShapes(pyblish.api.InstancePlugin):
                 # "deepcopyable".
                 try:
                     new_instance.data[k] = deepcopy(v)
-                except TypeError:  # noqa: PERF203
+                except TypeError:  # ruff: ignore[try-except-in-loop]
                     new_instance.data[k] = v
 
             # new_instance.data = instance.data

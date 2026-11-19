@@ -14,7 +14,7 @@ class CollectWorkfileData(pyblish.api.InstancePlugin):
     label = "Mocha Workfile"
     families: ClassVar[list[str]] = ["workfile"]
 
-    def process(self, instance: pyblish.api.Instance) -> None:  # noqa: PLR6301
+    def process(self, instance: pyblish.api.Instance) -> None:  # ruff: ignore[no-self-use]
         """Inject the current working file."""
         context = instance.context
         current_file = instance.context.data["currentFile"]

@@ -127,7 +127,7 @@ class ExportTrackingPoints(publish.Extractor):
                     # if there are only non-sequence files
                     for reminder in rems:
                         self.add_to_resources(
-                            Path(self.staging_dir(instance)) / reminder, instance)  # noqa: E501
+                            Path(self.staging_dir(instance)) / reminder, instance)  # ruff: ignore[line-too-long]
                     manifest_file = self._create_manifest_file(
                         staging_dir, rems, repre_name)
                     representations.append({
@@ -259,7 +259,7 @@ class ExportTrackingPoints(publish.Extractor):
                     msg = ("Cannot get extension "
                            f"from {exporter_info.label} exporter.")
                     raise KnownPublishError(msg)
-                file_name += f".{ExportTrackingPoints._get_extension(exporter_info)}"  # noqa: E501
+                file_name += f".{ExportTrackingPoints._get_extension(exporter_info)}"  # ruff: ignore[line-too-long]
 
             tracking_file_path = (
                     process_info.staging_dir / file_name
@@ -372,7 +372,7 @@ class ExportTrackingPoints(publish.Extractor):
             args += [
                 f"--exporter-name={exporter_info.label}",
                 "--file-path", path_to_subprocess_arg(
-                    (process_info.staging_dir / f"{instance_name}.{ext}").as_posix()),  # noqa: E501
+                    (process_info.staging_dir / f"{instance_name}.{ext}").as_posix()),  # ruff: ignore[line-too-long]
                 layer.name,
                 "-v4"
             ]
